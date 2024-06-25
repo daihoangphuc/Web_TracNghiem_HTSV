@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Web_TracNghiem_HTSV.Models.TestResult>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Question)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SelectedAnswer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubmittedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalScore)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Question.QuestionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SelectedAnswer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubmittedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalScore)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TestResultId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TestResultId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TestResultId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

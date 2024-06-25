@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Web_TracNghiem_HTSV.props" />
+</Project>

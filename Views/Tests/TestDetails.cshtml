@@ -31,11 +31,13 @@
                     @using (Html.BeginForm("MakeTestResult", "Tests", FormMethod.Post, new { id = "quizForm" }))
                     {
                         @Html.Hidden("TestId", question.TestId)
-                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerId);
+                        @Html.Hidden("QuestionId", question.QuestionId) <!-- Truyền thêm questionId -->
+                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerDescription[0]).ToList(); // Sắp xếp theo ký tự đầu tiên của AnswerDescription
+
                         foreach (var answer in sortedAnswers)
                         {
                             <label id="option-@question.QuestionId-@answer.AnswerId" class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
-                                <input type="radio" name="selectedAnswer" value="@answer.AnswerId" class="mr-2">
+                                <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
                                 @answer.AnswerDescription
                             </label>
                         }
@@ -87,9 +89,13 @@
             });
         }
 
+//        function submitFinal() {
+           // var form = document.getElementById('quizForm');
+           // form.submit();
+      //  }
         function submitFinal() {
-            var form = document.getElementById('quizForm');
-            form.submit();
+            // Chuyển hướng đến action Index của controller Other
+            window.location.href = '@Url.Action("Index", "Tests")';
         }
 
         function checkAnswer(TestId, selectedDescription, correctAnswer) {

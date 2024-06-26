@@ -1,0 +1,48 @@
+﻿@model Web_TracNghiem_HTSV.Models.TestResult
+
+@{
+    ViewData["Title"] = "Chi tiết kết quả bài kiểm tra";
+}
+
+<h1>Chi tiết kết quả bài kiểm tra</h1>
+
+<div>
+    <h2>Người dùng: @Model.User.UserName</h2>
+    <h3>Bài kiểm tra: @Model.Test.TestName</h3>
+    <h4>Điểm tổng: @Model.TotalScore</h4>
+    <h5>Thời gian nộp: @Model.SubmittedAt</h5>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Câu hỏi</th>
+                <th>Đáp án đúng</th>
+                <th>Đáp án đã chọn</th>
+                <th>Kết quả</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var corect in Model.Test.TestResults)
+            {
+                @foreach (var question in Model.Test.Questions)
+                {
+                    <tr>
+                        <td>@question.QuestionContent</td>
+                        
+                        <td>@question.CorrectAnswer</td>
+                       
+                    </tr>
+                }
+                <tr>
+                    <td>@Model.SelectedAnswer</td>
+                    <td>@(Model.IsCorrect ? "Đúng" : "Sai")</td>
+                </tr>
+            }
+             
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index">Trở lại danh sách</a>
+</div>

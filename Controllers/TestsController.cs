@@ -23,6 +23,56 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
+        [Authorize]
+        public async Task<IActionResult> ResultOfTest(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+/*            var listQuestion = await _context.Questions
+                .Where(q => q.TestId == id)
+                .Include(q => q.Answers)
+                .ToListAsync();
+            var listTestResult = await _context.TestResults
+                .Where(q => q.TestId == id)
+                .ToListAsync();
+            */
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var test = await _context.Tests
+                .Include(t => t.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(t => t.TestId == id);
+
+            if (test == null)
+            {
+                return NotFound("Bài kiểm tra không tồn tại hoặc bạn chưa làm bài này.");
+            }
+
+            var userTestResults = await _context.TestResults
+                .Where(tr => tr.TestId == test.TestId && tr.UserId == userId)
+                .Include(tr => tr.User)
+                .ToListAsync();
+
+            ViewBag.UserId = userId;
+            ViewBag.TestName = test.TestName;
+            ViewBag.TotalScore = userTestResults.Where(u=>u.UserId == userId).Sum(tr => tr.TotalScore);
+            ViewBag.ListQuestion = test.Questions.ToList();
+            ViewBag.ListTestResult = userTestResults;
+
+
+
+            var userTestResults1 = await _context.Tests
+              .Include(tr => tr.TestResults)
+              .Include(tr => tr.Questions)
+                    .ThenInclude(q => q.Answers)
+              .ToListAsync();
+            ViewBag.UserTestResult = userTestResults1;
+            return View(test);
+        }
+
         // TestsController.cs
 
         public async Task<IActionResult> SelectTest()
@@ -54,11 +104,9 @@ namespace Web_TracNghiem_HTSV.Controllers
             return View(paginatedList);
         }
 
-
-
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> MakeTestResult(string testId, string selectedAnswer)
+        public async Task<IActionResult> MakeTestResult(string testId, string questionId, string selectedAnswer)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -73,6 +121,20 @@ namespace Web_TracNghiem_HTSV.Controllers
                     return NotFound();
                 }
 
+                // Lấy đáp án đúng cho câu hỏi hiện tại
+                var correctAnswer = await _context.Questions
+                                                 .Where(q => q.QuestionId == questionId)
+                                                 .Select(q => q.CorrectAnswer)
+                                                 .FirstOrDefaultAsync();
+
+                if (correctAnswer == null)
+                {
+                    return NotFound("Question not found.");
+                }
+
+                // Kiểm tra đáp án đã chọn có đúng không
+                bool isCorrect = correctAnswer == selectedAnswer;
+
                 // Tạo một bản ghi TestResult
                 var testResult = new TestResult
                 {
@@ -80,8 +142,9 @@ namespace Web_TracNghiem_HTSV.Controllers
                     UserId = userId,
                     TestId = testId,
                     SubmittedAt = DateTime.Now,
+                    IsCorrect = isCorrect,
                     SelectedAnswer = selectedAnswer,
-                    TotalScore = 10 // Giả sử mặc định điểm số
+                    TotalScore = isCorrect ? 10 : 0 // Giả sử điểm số mặc định là 10 nếu đúng
                 };
 
                 // Lưu TestResult vào database

@@ -1,0 +1,24 @@
+﻿@model Web_TracNghiem_HTSV.Models.TestResult
+
+<h1>Test Result Details</h1>
+
+<p><strong>User Name:</strong> @Model.User.UserName</p>
+<p><strong>Test Name:</strong> @Model.Test.TestName</p>
+<p><strong>Submitted At:</strong> @Model.SubmittedAt</p>
+<p><strong>Total Score:</strong> @Model.TotalScore</p>
+<p><strong>Selected Answer:</strong> @Model.SelectedAnswer</p>
+<p><strong>Is Correct:</strong> @(Model.IsCorrect ? "Yes" : "No")</p>
+
+<h2>Questions</h2>
+@foreach (var question in Model.Test.Questions)
+{
+    <div>
+        <p><strong>Question:</strong> @question.QuestionContent</p>
+        <ul>
+            @foreach (var answer in question.Answers)
+            {
+                <li>@answer.AnswerDescription</li>
+            }
+        </ul>
+    </div>
+}

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +21,45 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
-        // GET: TestResults
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Result(string id)
+        {
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                var test = await _context.Tests
+                    .Include(t => t.Questions)
+                        .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync(t => t.TestId == id);
+
+                if (test == null)
+                {
+                    return NotFound("Bài kiểm tra không tồn tại hoặc bạn chưa làm bài này.");
+                }
+
+                var userTestResults = await _context.TestResults
+                    .Where(tr => tr.TestId == id && tr.UserId == userId)
+                    .Include(tr => tr.User)
+                    .ToListAsync();
+
+                ViewBag.UserId = userId;
+                ViewBag.TestName = test.TestName;
+                ViewBag.TotalScore = userTestResults.Sum(tr => tr.TotalScore);
+                ViewBag.ListQuestion = test.Questions.ToList();
+                ViewBag.ListTestResult = userTestResults;
+
+                return View(test);
+            }
+
+
+
+            // GET: TestResults
+            public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.TestResults.Include(t => t.Test).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());

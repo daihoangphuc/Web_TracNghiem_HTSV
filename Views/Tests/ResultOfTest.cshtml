@@ -1,0 +1,68 @@
+﻿@model Web_TracNghiem_HTSV.Models.Test
+
+@{
+    ViewData["Title"] = "Kết quả bài kiểm tra";
+}
+
+<h1>@ViewBag.TestName</h1>
+
+<div>
+    <h2>Người dùng: @User.Identity.Name</h2>
+    <h3>Tổng điểm: @ViewBag.TotalScore</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Câu hỏi</th>
+                <th>Các đáp án</th>
+                <th>Đáp án đúng</th>
+                <th>Đáp án đã chọn</th>
+                <th>Kết quả</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in ViewBag.ListQuestion)
+            {
+                <tr>
+                    <td>@question.QuestionContent</td>
+                    <td>
+                        <ul>
+                            @foreach (var answer in question.Answers)
+                            {
+                                <li>@answer.AnswerDescription</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>@question.CorrectAnswer</td>
+
+                    @if (ViewBag.ListTestResult != null && ViewBag.ListTestResult.Count > 0)
+                    {
+                        var testResult = ViewBag.ListTestResult[ViewBag.ListQuestion.IndexOf(question)];
+                        <td class="bg-warning">@testResult.SelectedAnswer</td>
+                        <td class="bg-warning">@(testResult.IsCorrect ? "Đúng" : "Sai")</td>
+                    }
+                    else
+                    {
+                        <td colspan="2">Không có kết quả cho câu hỏi này</td>
+                    }
+                </tr>
+            }
+
+          
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index">Trở lại danh sách</a>
+</div>
+@* 
+@functions {
+    public Web_TracNghiem_HTSV.Models.TestResult GetTestResultForQuestion(Web_TracNghiem_HTSV.Models.Question question)
+    {
+        var listTestResult = ViewBag.ListTestResult as List<Web_TracNghiem_HTSV.Models.TestResult>;
+        // Find the TestResult that matches the Question's TestId and UserId
+        return listTestResult.FirstOrDefault(tr => tr.TestId == question.TestId && tr.UserId == ViewBag.UserId);
+    }
+}
+ *@

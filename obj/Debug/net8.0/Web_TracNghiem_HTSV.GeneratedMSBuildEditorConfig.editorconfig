@@ -266,6 +266,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFJlc3VsdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/TestResults/Result.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFJlc3VsdHNcUmVzdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/TestResults/TestResult.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFJlc3VsdHNcVGVzdFJlc3VsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -284,6 +292,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/ResultOfTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcUmVzdWx0T2ZUZXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/SelectTest.cshtml]

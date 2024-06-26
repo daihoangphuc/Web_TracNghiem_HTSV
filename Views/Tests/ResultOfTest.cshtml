@@ -1,4 +1,81 @@
 ﻿@model Web_TracNghiem_HTSV.Models.Test
+@functions {
+    public Web_TracNghiem_HTSV.Models.TestResult GetTestResultForQuestion(Web_TracNghiem_HTSV.Models.Question question)
+    {
+        var listTestResult = ViewBag.ListTestResult as List<Web_TracNghiem_HTSV.Models.TestResult>;
+        // Find the TestResult that matches the Question's TestId and UserId
+        return listTestResult.FirstOrDefault(tr => tr.QuestionId == question.QuestionId && tr.UserId == ViewBag.UserId);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <!-- Import Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4 sm:p-8">
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Test Results</h1>
+
+        <!-- Replace with actual dynamic content from your model -->
+        <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+            <p class="mb-4"><strong>Test Name:</strong> @ViewBag.TestName</p>
+            <p class="mb-4"><strong>User:</strong> @User.Identity.Name</p>
+            <p class="mb-4"><strong>Total Score:</strong> @ViewBag.TotalScore</p>
+        </div>
+        @foreach (var question in ViewBag.ListQuestion)
+        {
+            var testResult = GetTestResultForQuestion(question);
+            <!-- Example question block (repeat for each question) -->
+            <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+                <p class="mb-4"><strong>Question:</strong> @question.QuestionContent</p>
+                <div class="grid grid-cols-1 gap-4">
+                    <ul>
+                        @foreach (var answer in question.Answers)
+                        {
+                            <!-- Example options (repeat for each option) -->
+                            <li>
+                                <label class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
+                                    <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
+                                    @answer.AnswerDescription
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                    <p class="mb-2"><strong>Correct Answer:</strong> @question.CorrectAnswer</p>
+                    @if (testResult != null)
+                    {
+                        <p class="mb-2"><strong>Selected Answer:</strong> @testResult.SelectedAnswer</p>
+                        <p class="mb-2"><strong>Result:</strong> @(testResult.IsCorrect ? "Đúng" : "Sai")</p>
+                    }
+                    else
+                    {
+                        <p>Không có kết quả cho câu hỏi này</p>
+                    }
+                </div>
+            </div>
+        }
+        <!-- End of question block -->
+
+        <div class="text-center mt-8">
+            <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200">
+                Back to Quiz
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
+@* @model Web_TracNghiem_HTSV.Models.Test
 
 @{
     ViewData["Title"] = "Kết quả bài kiểm tra";
@@ -48,7 +125,7 @@
                 </tr>
             }
 
-          
+
         </tbody>
     </table>
 </div>
@@ -56,13 +133,4 @@
 <div>
     <a asp-action="Index">Trở lại danh sách</a>
 </div>
-@* 
-@functions {
-    public Web_TracNghiem_HTSV.Models.TestResult GetTestResultForQuestion(Web_TracNghiem_HTSV.Models.Question question)
-    {
-        var listTestResult = ViewBag.ListTestResult as List<Web_TracNghiem_HTSV.Models.TestResult>;
-        // Find the TestResult that matches the Question's TestId and UserId
-        return listTestResult.FirstOrDefault(tr => tr.TestId == question.TestId && tr.UserId == ViewBag.UserId);
-    }
-}
  *@

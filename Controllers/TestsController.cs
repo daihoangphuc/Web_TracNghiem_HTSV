@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,14 +30,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return NotFound();
             }
 
-/*            var listQuestion = await _context.Questions
-                .Where(q => q.TestId == id)
-                .Include(q => q.Answers)
-                .ToListAsync();
-            var listTestResult = await _context.TestResults
-                .Where(q => q.TestId == id)
-                .ToListAsync();
-            */
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var test = await _context.Tests
@@ -52,13 +43,13 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var userTestResults = await _context.TestResults
-                .Where(tr => tr.TestId == test.TestId && tr.UserId == userId)
+                .Where(tr => tr.TestId == id && tr.UserId == userId)
                 .Include(tr => tr.User)
                 .ToListAsync();
 
             ViewBag.UserId = userId;
             ViewBag.TestName = test.TestName;
-            ViewBag.TotalScore = userTestResults.Where(u=>u.UserId == userId).Sum(tr => tr.TotalScore);
+            ViewBag.TotalScore = userTestResults.Where(u => u.UserId == userId).Sum(tr => tr.TotalScore);
             ViewBag.ListQuestion = test.Questions.ToList();
             ViewBag.ListTestResult = userTestResults;
 
@@ -69,6 +60,8 @@ namespace Web_TracNghiem_HTSV.Controllers
               .Include(tr => tr.Questions)
                     .ThenInclude(q => q.Answers)
               .ToListAsync();
+
+
             ViewBag.UserTestResult = userTestResults1;
             return View(test);
         }
@@ -127,6 +120,8 @@ namespace Web_TracNghiem_HTSV.Controllers
                                                  .Select(q => q.CorrectAnswer)
                                                  .FirstOrDefaultAsync();
 
+
+
                 if (correctAnswer == null)
                 {
                     return NotFound("Question not found.");
@@ -143,6 +138,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                     TestId = testId,
                     SubmittedAt = DateTime.Now,
                     IsCorrect = isCorrect,
+                    QuestionId = questionId,
                     SelectedAnswer = selectedAnswer,
                     TotalScore = isCorrect ? 10 : 0 // Giả sử điểm số mặc định là 10 nếu đúng
                 };
@@ -159,7 +155,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return RedirectToAction("Login", "Account");
             }
         }
-
 
 
         // GET: Tests
@@ -197,12 +192,15 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TestId,TestName")] Test test)
+        public async Task<IActionResult> Create([Bind("TestId,TestName,IsLocked")] Test test)
         {
-
-            _context.Add(test);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (ModelState.IsValid)
+            {
+                _context.Add(test);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(test);
         }
 
         // GET: Tests/Edit/5
@@ -226,7 +224,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TestId,TestName")] Test test)
+        public async Task<IActionResult> Edit(string id, [Bind("TestId,TestName,IsLocked")] Test test)
         {
             if (id != test.TestId)
             {

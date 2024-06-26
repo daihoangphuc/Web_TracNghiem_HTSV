@@ -13,15 +13,20 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" hidden>
+            <div class="form-group">
                 <label asp-for="TestId" class="control-label"></label>
-                <input asp-for="TestId" class="form-control" value="@Guid.NewGuid().ToString()" />
+                <input asp-for="TestId" class="form-control" />
                 <span asp-validation-for="TestId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TestName" class="control-label"></label>
                 <input asp-for="TestName" class="form-control" />
                 <span asp-validation-for="TestName" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsLocked" /> @Html.DisplayNameFor(model => model.IsLocked)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

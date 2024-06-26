@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web_TracNghiem_HTSV")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0b5341ba8f14fda48a9b861108299c3b6baf00c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+458355392b81bf574097492aca855bfe6cc19221")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web_TracNghiem_HTSV")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web_TracNghiem_HTSV")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

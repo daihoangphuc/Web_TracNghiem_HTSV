@@ -20,6 +20,9 @@
                 @Html.DisplayNameFor(model => model.Test)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.QuestionId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.SelectedAnswer)
             </th>
             <th>
@@ -44,6 +47,9 @@
                 @Html.DisplayFor(modelItem => item.Test.TestId)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.QuestionId)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.SelectedAnswer)
             </td>
             <td>
@@ -58,9 +64,7 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TestResultId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.TestResultId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TestResultId">Delete</a> |
-
-
+                <a asp-action="Delete" asp-route-id="@item.TestResultId">Delete</a>
             </td>
         </tr>
 }

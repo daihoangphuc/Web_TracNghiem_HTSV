@@ -22,7 +22,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // GET: TestResults
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TestResults.Include(t => t.Question).Include(t => t.User);
+            var applicationDbContext = _context.TestResults.Include(t => t.Test).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var testResult = await _context.TestResults
-                .Include(t => t.Question)
+                .Include(t => t.Test)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.TestResultId == id);
             if (testResult == null)
@@ -49,7 +49,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // GET: TestResults/Create
         public IActionResult Create()
         {
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId");
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -59,7 +59,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TestResultId,UserId,QuestionId,SelectedAnswer,SubmittedAt,TotalScore")] TestResult testResult)
+        public async Task<IActionResult> Create([Bind("TestResultId,UserId,TestId,SelectedAnswer,IsCorrect,SubmittedAt,TotalScore")] TestResult testResult)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +67,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", testResult.QuestionId);
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", testResult.TestId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", testResult.UserId);
             return View(testResult);
         }
@@ -85,7 +85,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             {
                 return NotFound();
             }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", testResult.QuestionId);
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", testResult.TestId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", testResult.UserId);
             return View(testResult);
         }
@@ -95,7 +95,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TestResultId,UserId,QuestionId,SelectedAnswer,SubmittedAt,TotalScore")] TestResult testResult)
+        public async Task<IActionResult> Edit(string id, [Bind("TestResultId,UserId,TestId,SelectedAnswer,IsCorrect,SubmittedAt,TotalScore")] TestResult testResult)
         {
             if (id != testResult.TestResultId)
             {
@@ -122,7 +122,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", testResult.QuestionId);
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", testResult.TestId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", testResult.UserId);
             return View(testResult);
         }
@@ -136,7 +136,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var testResult = await _context.TestResults
-                .Include(t => t.Question)
+                .Include(t => t.Test)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.TestResultId == id);
             if (testResult == null)

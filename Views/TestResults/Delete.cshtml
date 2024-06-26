@@ -19,16 +19,22 @@
             @Html.DisplayFor(model => model.User.Id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Question)
+            @Html.DisplayNameFor(model => model.Test)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Question.QuestionId)
+            @Html.DisplayFor(model => model.Test.TestId)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.SelectedAnswer)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.SelectedAnswer)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCorrect)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsCorrect)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.SubmittedAt)

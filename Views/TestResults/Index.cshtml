@@ -17,10 +17,13 @@
                 @Html.DisplayNameFor(model => model.User)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Question)
+                @Html.DisplayNameFor(model => model.Test)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SelectedAnswer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCorrect)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SubmittedAt)
@@ -38,10 +41,13 @@
                 @Html.DisplayFor(modelItem => item.User.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Question.QuestionId)
+                @Html.DisplayFor(modelItem => item.Test.TestId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SelectedAnswer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCorrect)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SubmittedAt)

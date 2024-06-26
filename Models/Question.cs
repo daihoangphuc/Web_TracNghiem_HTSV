@@ -15,5 +15,8 @@ namespace Web_TracNghiem_HTSV.Models
         // Danh sách các đáp án cho câu hỏi
         public ICollection<Answer> Answers { get; set; }
 
+        [ForeignKey("Test")]
+        public string TestId { get; set; } // ID of the user who took the test
+        public Test? Test { get; set; }
     }
 }

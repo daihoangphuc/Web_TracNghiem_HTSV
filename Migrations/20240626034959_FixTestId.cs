@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Web_TracNghiem_HTSV.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class FixTestId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,16 +51,15 @@ namespace Web_TracNghiem_HTSV.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Questions",
+                name: "Tests",
                 columns: table => new
                 {
-                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    QuestionContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TestId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questions", x => x.QuestionId);
+                    table.PrimaryKey("PK_Tests", x => x.TestId);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,21 +169,22 @@ namespace Web_TracNghiem_HTSV.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answers",
+                name: "Questions",
                 columns: table => new
                 {
-                    AnswerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AnswerDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuestionContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TestId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => x.AnswerId);
+                    table.PrimaryKey("PK_Questions", x => x.QuestionId);
                     table.ForeignKey(
-                        name: "FK_Answers_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "QuestionId",
+                        name: "FK_Questions_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "TestId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -194,8 +194,9 @@ namespace Web_TracNghiem_HTSV.Migrations
                 {
                     TestResultId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TestId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SelectedAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "bit", nullable: false),
                     SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalScore = table.Column<int>(type: "int", nullable: false)
                 },
@@ -209,7 +210,26 @@ namespace Web_TracNghiem_HTSV.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TestResults_Questions_QuestionId",
+                        name: "FK_TestResults_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "TestId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Answers",
+                columns: table => new
+                {
+                    AnswerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AnswerDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Answers", x => x.AnswerId);
+                    table.ForeignKey(
+                        name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "QuestionId",
@@ -261,9 +281,14 @@ namespace Web_TracNghiem_HTSV.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestResults_QuestionId",
+                name: "IX_Questions_TestId",
+                table: "Questions",
+                column: "TestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestResults_TestId",
                 table: "TestResults",
-                column: "QuestionId");
+                column: "TestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TestResults_UserId",
@@ -296,13 +321,16 @@ namespace Web_TracNghiem_HTSV.Migrations
                 name: "TestResults");
 
             migrationBuilder.DropTable(
+                name: "Questions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "Tests");
         }
     }
 }

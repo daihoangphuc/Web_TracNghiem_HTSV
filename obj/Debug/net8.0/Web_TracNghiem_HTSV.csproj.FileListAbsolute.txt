@@ -285,3 +285,4 @@ D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\refint\We
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracNghiem_HTSV.pdb
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracNghiem_HTSV.genruntimeconfig.cache
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\ref\Web_TracNghiem_HTSV.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracNghiem_HTSV.sourcelink.json

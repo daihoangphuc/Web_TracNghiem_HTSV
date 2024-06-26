@@ -5,15 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Web_TracNghiem_HTSV.Services;
 using Web_TracNghiem_HTSV.Data;
 using Web_TracNghiem_HTSV.Models;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
-    [Authorize]
     public class QuestionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,49 +20,15 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
-        [Authorize]
-        public async Task<IActionResult> MakeTestResult(string questionId, string selectedAnswer)
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                // Lấy UserId từ Claims (ví dụ: ASP.NET Core Identity)
-                string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                // Lấy thông tin câu hỏi dựa trên questionId
-                var question = await _context.Questions.FindAsync(questionId);
-
-                if (question == null)
-                {
-                    return NotFound();
-                }
-
-                // Tạo một bản ghi TestResult
-                var testResult = new TestResult
-                {
-                    TestResultId = Guid.NewGuid().ToString(),
-                    UserId = userId,
-                    QuestionId = questionId,
-                    SubmittedAt = DateTime.Now,
-                    SelectedAnswer = selectedAnswer,
-                    TotalScore = 10 // Mặc định điểm số
-                };
-                // Lưu TestResult vào database
-                _context.Add(testResult);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                // Nếu chưa đăng nhập thì chuyển hướng đến trang đăng nhập
-                return RedirectToAction("Login", "Account");
-            }
-            return RedirectToAction(nameof(Index)); // Hoặc trả về một view khác tùy vào yêu cầu của bạn
-        }
-
         // GET: Questions
         public async Task<IActionResult> Index(int page=1)
         {
-            /*return View(await _context.Questions.ToListAsync());*/
+            /*var applicationDbContext = _context.Questions.Include(q => q.Test);
+            return View(await applicationDbContext.ToListAsync());*/
             var questions = _context.Questions.Include(q => q.Answers).Skip((page - 1) * 1).Take(1).ToList();
+
             var paginatedList = new PaginatedList<Question>(questions, _context.Questions.Count(), page, 1);
+
             return View(paginatedList);
         }
 
@@ -78,6 +41,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var question = await _context.Questions
+                .Include(q => q.Test)
                 .FirstOrDefaultAsync(m => m.QuestionId == id);
             if (question == null)
             {
@@ -90,6 +54,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // GET: Questions/Create
         public IActionResult Create()
         {
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId");
             return View();
         }
 
@@ -98,7 +63,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("QuestionId,QuestionContent,CorrectAnswer")] Question question)
+        public async Task<IActionResult> Create([Bind("QuestionId,QuestionContent,CorrectAnswer,TestId")] Question question)
         {
             if (ModelState.IsValid)
             {
@@ -106,6 +71,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", question.TestId);
             return View(question);
         }
 
@@ -122,6 +88,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             {
                 return NotFound();
             }
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", question.TestId);
             return View(question);
         }
 
@@ -130,7 +97,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("QuestionId,QuestionContent,CorrectAnswer")] Question question)
+        public async Task<IActionResult> Edit(string id, [Bind("QuestionId,QuestionContent,CorrectAnswer,TestId")] Question question)
         {
             if (id != question.QuestionId)
             {
@@ -157,6 +124,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", question.TestId);
             return View(question);
         }
 
@@ -169,6 +137,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var question = await _context.Questions
+                .Include(q => q.Test)
                 .FirstOrDefaultAsync(m => m.QuestionId == id);
             if (question == null)
             {

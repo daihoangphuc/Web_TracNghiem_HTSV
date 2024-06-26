@@ -12,8 +12,8 @@ using Web_TracNghiem_HTSV.Data;
 namespace Web_TracNghiem_HTSV.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240625160923_initial")]
-    partial class initial
+    [Migration("20240626040910_FixTestId1")]
+    partial class FixTestId1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,9 +193,29 @@ namespace Web_TracNghiem_HTSV.Migrations
                     b.Property<string>("QuestionContent")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TestId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("QuestionId");
 
+                    b.HasIndex("TestId");
+
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Web_TracNghiem_HTSV.Models.Test", b =>
+                {
+                    b.Property<string>("TestId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TestName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TestId");
+
+                    b.ToTable("Tests");
                 });
 
             modelBuilder.Entity("Web_TracNghiem_HTSV.Models.TestResult", b =>
@@ -203,9 +223,8 @@ namespace Web_TracNghiem_HTSV.Migrations
                     b.Property<string>("TestResultId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("QuestionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
 
                     b.Property<string>("SelectedAnswer")
                         .IsRequired()
@@ -213,6 +232,10 @@ namespace Web_TracNghiem_HTSV.Migrations
 
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TestId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");
@@ -223,7 +246,7 @@ namespace Web_TracNghiem_HTSV.Migrations
 
                     b.HasKey("TestResultId");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("TestId");
 
                     b.HasIndex("UserId");
 
@@ -357,11 +380,22 @@ namespace Web_TracNghiem_HTSV.Migrations
                     b.Navigation("Question");
                 });
 
+            modelBuilder.Entity("Web_TracNghiem_HTSV.Models.Question", b =>
+                {
+                    b.HasOne("Web_TracNghiem_HTSV.Models.Test", "Test")
+                        .WithMany("Questions")
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Test");
+                });
+
             modelBuilder.Entity("Web_TracNghiem_HTSV.Models.TestResult", b =>
                 {
-                    b.HasOne("Web_TracNghiem_HTSV.Models.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
+                    b.HasOne("Web_TracNghiem_HTSV.Models.Test", "Test")
+                        .WithMany("TestResults")
+                        .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -371,7 +405,7 @@ namespace Web_TracNghiem_HTSV.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Question");
+                    b.Navigation("Test");
 
                     b.Navigation("User");
                 });
@@ -379,6 +413,13 @@ namespace Web_TracNghiem_HTSV.Migrations
             modelBuilder.Entity("Web_TracNghiem_HTSV.Models.Question", b =>
                 {
                     b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("Web_TracNghiem_HTSV.Models.Test", b =>
+                {
+                    b.Navigation("Questions");
+
+                    b.Navigation("TestResults");
                 });
 #pragma warning restore 612, 618
         }

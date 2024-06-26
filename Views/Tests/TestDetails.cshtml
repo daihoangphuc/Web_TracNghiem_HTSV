@@ -1,39 +1,41 @@
 ﻿@using Web_TracNghiem_HTSV.Services;
-@model PaginatedList<Web_TracNghiem_HTSV.Models.Question>
+@model PaginatedList<Question>
 
 @{
-    ViewBag.Title = "Questions";
+    ViewBag.Title = "Test Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Index">Back to Tests List</a>
 </p>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
+    <title>Test Details</title>
     <!-- Import Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-4 sm:p-8">
-        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Quiz</h1>
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Test Details</h1>
 
         @foreach (var question in Model.Items)
         {
-            <div id="question-container-@question.TestId" class="bg-white shadow-md rounded-lg p-6 mb-8 quiz-card">
-                <p class="mb-4 text-lg"><strong>Câu hỏi @Model.PageIndex:</strong> @question.QuestionContent</p>
+            <div id="question-container-@question.QuestionId" class="bg-white shadow-md rounded-lg p-6 mb-8 quiz-card">
+                <p class="mb-4 text-lg"><strong>Câu hỏi @Model.PageIndex</strong>: @question.QuestionContent</p>
                 <div class="grid grid-cols-1 gap-4">
                     @using (Html.BeginForm("MakeTestResult", "Tests", FormMethod.Post, new { id = "quizForm" }))
                     {
                         @Html.Hidden("TestId", question.TestId)
-                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerDescription[0]);
+                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerId);
                         foreach (var answer in sortedAnswers)
                         {
-                            <label id="option-@question.TestId-@answer.AnswerDescription" class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
-                                <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
+                            <label id="option-@question.QuestionId-@answer.AnswerId" class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
+                                <input type="radio" name="selectedAnswer" value="@answer.AnswerId" class="mr-2">
                                 @answer.AnswerDescription
                             </label>
                         }
@@ -74,7 +76,7 @@
                         document.getElementById('confirm-button').style.display = 'none';
                         document.getElementById('submit-button').style.display = 'block';
                     } else {
-                        window.location.href = `@Url.Action("Index", "Questions")?page=${nextPage}`;
+                        window.location.href = `@Url.Action("TestDetails", new { id = Model.Items[0]?.TestId, page = ViewBag.NextPage })`;
                     }
                 } else {
                     alert('Có lỗi xảy ra. Vui lòng thử lại.');
@@ -116,55 +118,3 @@
     </script>
 </body>
 </html>
-
-
-
-@* @model IEnumerable<Web_TracNghiem_HTSV.Models.Question>
-
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.QuestionContent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorrectAnswer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Test)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.QuestionContent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorrectAnswer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Test.TestId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TestId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TestId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TestId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@

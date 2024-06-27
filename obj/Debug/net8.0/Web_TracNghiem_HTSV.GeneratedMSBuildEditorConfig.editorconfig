@@ -234,6 +234,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVlc3Rpb25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Role/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Role/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -286,6 +294,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/ListTests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcTGlzdFRlc3RzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/ResultOfTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcUmVzdWx0T2ZUZXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -296,6 +308,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/TestDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcVGVzdERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/UserRoles/AddRole.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclJvbGVzXEFkZFJvbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/UserRoles/EditRole.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclJvbGVzXEVkaXRSb2xlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/UserRoles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclJvbGVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/_ViewImports.cshtml]

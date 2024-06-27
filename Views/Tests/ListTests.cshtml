@@ -1,0 +1,44 @@
+﻿@model List<TestViewModel>
+
+<h2>Danh sách các bài Test</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Test Name</th>
+            <th>IsLocked</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var test in Model)
+        {
+            <tr>
+                <td>@test.TestName</td>
+                <td>@test.IsLocked</td>
+                <td>
+                    @if (User.IsInRole("Administrators") && test.IsLocked)
+                    {
+                        <form asp-action="ToggleLock" asp-route-id="@test.TestId" method="post">
+                            <button type="submit" class="btn btn-warning">Unlock</button>
+                        </form>
+                    }
+                    else
+                    {
+                        @if (test.IsLocked == false)
+                        {
+                            @if (test.IsTestTaken)
+                            {
+                                <a asp-action="ResultOfTest" asp-route-id="@test.TestId" class="btn btn-primary">Xem kết quả</a>
+                            }
+                            else
+                            {
+                                <a asp-action="TestDetails" asp-route-id="@test.TestId" class="btn btn-success">Bắt đầu làm bài</a>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

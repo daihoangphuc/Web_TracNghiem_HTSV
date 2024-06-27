@@ -48,7 +48,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // GET: Answers/Create
         public IActionResult Create()
         {
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId");
+            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent");
             return View();
         }
 
@@ -59,13 +59,11 @@ namespace Web_TracNghiem_HTSV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AnswerId,AnswerDescription,QuestionId")] Answer answer)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(answer);
+            answer.AnswerId = Guid.NewGuid().ToString();
+            _context.Add(answer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", answer.QuestionId);
+            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent", answer.QuestionId);
             return View(answer);
         }
 
@@ -82,7 +80,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             {
                 return NotFound();
             }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", answer.QuestionId);
+            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent", answer.QuestionId);
             return View(answer);
         }
 
@@ -98,8 +96,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     _context.Update(answer);
@@ -117,8 +114,8 @@ namespace Web_TracNghiem_HTSV.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionId", answer.QuestionId);
+            
+            ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent", answer.QuestionId);
             return View(answer);
         }
 

@@ -19,8 +19,24 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
-        // GET: TestResults
-        public async Task<IActionResult> Index()
+        // Phương thức kiểm tra xem người dùng đã làm bài kiểm tra chưa
+        public async Task<IActionResult> HasUserTakenTest(string userId, string testId)
+        {
+            var testResult = await _context.TestResults
+                .FirstOrDefaultAsync(tr => tr.UserId == userId && tr.TestId == testId);
+
+            if (testResult != null)
+            {
+                return Json(new { hasTaken = true });
+            }
+            else
+            {
+                return Json(new { hasTaken = false });
+            }
+        }
+
+            // GET: TestResults
+            public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.TestResults.Include(t => t.Test).Include(t => t.User);
             return View(await applicationDbContext.ToListAsync());

@@ -16,29 +16,71 @@
             <th>
                 @Html.DisplayNameFor(model => model.TestName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsLocked)
-            </th>
-            <th></th>
+
+            <th>Actions</th>
+
+            @if (User.IsInRole("Administrators"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.IsLocked)
+                </th>
+                <th>Lock/Unlock</th>
+            }
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TestName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsLocked)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TestId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TestId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TestId">Delete</a> |
-                <a asp-action="ResultOfTest" asp-route-id="@item.TestId">Xem kết quả!</a>
+        @foreach (var item in Model)
+        {
+            @if (User.IsInRole("Administrators") || (!item.IsLocked && User.IsInRole("Users")))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TestName)
+                    </td>
 
-            </td>
-        </tr>
-}
+                    <td>
+                        @if (User.IsInRole("Administrators"))
+                        {
+                            if (!item.IsLocked)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.TestId" class="btn btn-info">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger">Delete</a>
+                            }
+                        }
+                        else if (User.IsInRole("Users"))
+                        {
+                            @if (!item.IsLocked)
+                            {
+                                <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success">Start Test</a>
+                                <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary">Result</a>
+                            }
+                        }
+                    </td>
+                    @if (User.IsInRole("Administrators"))
+                    {
+                    <td>
+                        @item.IsLocked
+                    </td>
+                    <td>
+
+                            @if (item.IsLocked)
+                            {
+                                <form asp-action="UnlockTest" asp-route-id="@item.TestId" method="post">
+                                    <button type="submit" class="btn btn-primary">Unlock</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="LockTest" asp-route-id="@item.TestId" method="post">
+                                    <button type="submit" class="btn btn-danger">Lock</button>
+                                </form>
+                            }
+
+                    </td>
+                    }
+                </tr>
+            }
+        }
     </tbody>
 </table>

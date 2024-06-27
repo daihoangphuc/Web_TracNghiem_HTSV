@@ -1,4 +1,4 @@
-﻿@using Web_TracNghiem_HTSV.Services;
+﻿@* @using Web_TracNghiem_HTSV.Services;
 @model PaginatedList<Web_TracNghiem_HTSV.Models.Question>
 
 @{
@@ -117,9 +117,9 @@
 </body>
 </html>
 
-
-
-@*  
+ *@
+ @model IEnumerable<Web_TracNghiem_HTSV.Models.Question>
+ 
 
 @{
     ViewData["Title"] = "Index";
@@ -159,12 +159,11 @@
                 @Html.DisplayFor(modelItem => item.Test.TestId)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.TestId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TestId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TestId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.QuestionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.QuestionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.QuestionId">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
- *@

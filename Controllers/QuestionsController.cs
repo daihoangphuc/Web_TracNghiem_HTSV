@@ -21,15 +21,15 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         // GET: Questions
-        public async Task<IActionResult> Index(int page=1)
+        public async Task<IActionResult> Index()
         {
-            /*var applicationDbContext = _context.Questions.Include(q => q.Test);
-            return View(await applicationDbContext.ToListAsync());*/
-            var questions = _context.Questions.Include(q => q.Answers).Skip((page - 1) * 1).Take(1).ToList();
+            var applicationDbContext = _context.Questions.Include(q => q.Test);
+            return View(await applicationDbContext.ToListAsync());
+            /*            var questions = _context.Questions.Include(q => q.Answers).Skip((page - 1) * 1).Take(1).ToList();
 
-            var paginatedList = new PaginatedList<Question>(questions, _context.Questions.Count(), page, 1);
+                        var paginatedList = new PaginatedList<Question>(questions, _context.Questions.Count(), page, 1);
 
-            return View(paginatedList);
+                        return View(paginatedList);*/
         }
 
         // GET: Questions/Details/5
@@ -54,7 +54,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // GET: Questions/Create
         public IActionResult Create()
         {
-            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId");
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestName");
             return View();
         }
 
@@ -65,13 +65,13 @@ namespace Web_TracNghiem_HTSV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestionId,QuestionContent,CorrectAnswer,TestId")] Question question)
         {
-            if (ModelState.IsValid)
-            {
+
+                question.QuestionId = Guid.NewGuid().ToString();
                 _context.Add(question);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", question.TestId);
+
+            ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestName", question.TestId);
             return View(question);
         }
 

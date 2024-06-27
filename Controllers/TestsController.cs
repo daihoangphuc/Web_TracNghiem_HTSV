@@ -22,6 +22,107 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrators")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LockTest(string id)
+        {
+            var test = await _context.Tests.FindAsync(id);
+
+            if (test == null)
+            {
+                return NotFound();
+            }
+
+            test.IsLocked = true; // Mở khóa bài test
+
+            try
+            {
+                _context.Update(test);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TestExists(test.TestId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Administrators")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnlockTest(string id)
+        {
+            var test = await _context.Tests.FindAsync(id);
+
+            if (test == null)
+            {
+                return NotFound();
+            }
+
+            test.IsLocked = false; // Mở khóa bài test
+
+            try
+            {
+                _context.Update(test);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TestExists(test.TestId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [Authorize]
+        public ActionResult ListTests()
+        {
+            // Lấy danh sách các bài Test
+            var tests = _context.Tests.Include(t => t.TestResults).ToList(); // db là đối tượng DbContext của bạn
+
+            // Lấy UserId của người dùng hiện tại (cần phải có xác thực người dùng)
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Phương thức này tùy thuộc vào cách bạn xác thực người dùng
+
+            // Chuẩn bị danh sách các ViewModel để truyền vào view
+            List<TestViewModel> testViewModels = new List<TestViewModel>();
+
+            foreach (var test in tests)
+            {
+                // Kiểm tra xem người dùng đã làm bài Test này chưa
+                var testResult = test.TestResults.FirstOrDefault(tr => tr.UserId == userId);
+
+                // Tạo ViewModel cho từng Test để truyền vào view
+                var viewModel = new TestViewModel
+                {
+                    TestId = test.TestId,
+                    TestName = test.TestName,
+                    IsTestTaken = testResult != null
+                };
+
+                testViewModels.Add(viewModel);
+            }
+
+            return View(testViewModels);
+        }
+
+
         [Authorize]
         public async Task<IActionResult> ResultOfTest(string id)
         {
@@ -68,12 +169,14 @@ namespace Web_TracNghiem_HTSV.Controllers
 
         // TestsController.cs
 
+        [Authorize]
         public async Task<IActionResult> SelectTest()
         {
             var tests = await _context.Tests.ToListAsync(); // Lấy danh sách các bài test từ database
             return View(tests);
         }
 
+        [Authorize]
         public async Task<IActionResult> TestDetails(string id, int page = 1)
         {
             var test = await _context.Tests
@@ -158,6 +261,7 @@ namespace Web_TracNghiem_HTSV.Controllers
 
 
         // GET: Tests
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Tests.ToListAsync());
@@ -182,6 +286,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         // GET: Tests/Create
+        [Authorize(Roles = "Administrators")]
         public IActionResult Create()
         {
             return View();
@@ -191,19 +296,20 @@ namespace Web_TracNghiem_HTSV.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TestId,TestName,IsLocked")] Test test)
         {
-            if (ModelState.IsValid)
-            {
+
+                test.TestId = Guid.NewGuid().ToString();
                 _context.Add(test);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(test);
+          /*  return View(test);*/
         }
 
         // GET: Tests/Edit/5
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -224,6 +330,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Edit(string id, [Bind("TestId,TestName,IsLocked")] Test test)
         {
             if (id != test.TestId)
@@ -255,6 +362,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         // GET: Tests/Delete/5
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -275,6 +383,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // POST: Tests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var test = await _context.Tests.FindAsync(id);

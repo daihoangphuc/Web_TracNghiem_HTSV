@@ -6,10 +6,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<p>
-    <a asp-action="Index">Back to Tests List</a>
-</p>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,9 +15,9 @@
     <!-- Import Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100" style="margin-top -20px;">
     <div class="container mx-auto p-4 sm:p-8">
-        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Test Details</h1>
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Kiểm tra</h1>
 
         @foreach (var question in Model.Items)
         {
@@ -64,7 +60,11 @@
             }
         </div>
     </div>
-
+    <style>
+        #confirm-button{
+           margin-top: -20px;
+        }
+    </style>
     <script>
         function submitAndNextPage(nextPage, isLastPage) {
             var form = document.getElementById('quizForm');

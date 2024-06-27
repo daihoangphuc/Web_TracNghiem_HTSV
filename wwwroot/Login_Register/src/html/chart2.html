@@ -1,0 +1,50 @@
+<head>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+      <h1 class="text-2xl text-center font-semibold mb-4">Biểu Đồ Spline</h1>
+      <canvas id="splineChart"></canvas>
+    </div>
+  
+    <script>
+      const data = {
+        labels: [
+          'Tháng 1',
+          'Tháng 2',
+          'Tháng 3',
+          'Tháng 4',
+          'Tháng 5',
+          'Tháng 6',
+        ],
+        datasets: [{
+          label: 'Số lượng bán ra',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.4 // Đây là giá trị mặc định dùng để tạo hiệu ứng mượt cho đường trong biểu đồ.
+        }]
+      };
+  
+      const config = {
+        type: 'line',
+        data: data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      };
+  
+      var splineChart = new Chart(
+        document.getElementById('splineChart'),
+        config
+      );
+    </script>
+  </body>

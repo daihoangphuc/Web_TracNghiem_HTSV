@@ -12,12 +12,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using NuGet.Configuration;
 using Web_TracNghiem_HTSV.Models;
 
 namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
@@ -30,13 +32,15 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -121,6 +126,8 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    // Thêm người dùng vào vai trò "Users"
+                    await _userManager.AddToRoleAsync(user, "Users");
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -132,8 +139,24 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    // Đường dẫn đến file HTML template
+                    string templatePath = Path.Combine(_webHostEnvironment.WebRootPath, "email_template", "register_comfirm.html");
+
+                    // Đọc nội dung của file template
+                    string htmlTemplate = System.IO.File.ReadAllText(templatePath);
+
+                    var link = HtmlEncoder.Default.Encode(callbackUrl);
+
+                    string htmlMessage = htmlTemplate.Replace("{{link}}", link);
+                    /*
+                                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");*/
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", htmlMessage);
+
+
+
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

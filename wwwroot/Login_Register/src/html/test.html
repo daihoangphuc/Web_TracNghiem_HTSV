@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participation Rate Chart</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+</head>
+
+<body class="bg-gray-200 p-6">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4">Participation Rate Chart</h1>
+        <canvas id="participationRateChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        var participationRateData = {
+            labels: ['Tháng', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: 'Number of Students Registered',
+                data: [84, 20, 30, 35, 40, 45, 120],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                tension: 0.5,
+                fill: true
+            }, {
+                label: 'Number of Students Participated',
+                data: [15, 20, 25, 30, 35, 40, 45],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.5,
+                fill: true
+            }]
+        };
+
+        var participationRateCtx = document.getElementById('participationRateChart').getContext('2d');
+        var participationRateChart = new Chart(participationRateCtx, {
+            type: 'line',
+            data: participationRateData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Students'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Months'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

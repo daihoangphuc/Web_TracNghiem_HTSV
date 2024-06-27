@@ -13,7 +13,7 @@ using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
-
+    [Authorize]
     public class TestsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -93,6 +93,8 @@ namespace Web_TracNghiem_HTSV.Controllers
 
 
         [Authorize]
+        [Authorize(Roles = "Administrators")]
+
         public ActionResult ListTests()
         {
             // Lấy danh sách các bài Test

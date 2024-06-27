@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
+    [Authorize]
     public class QuestionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -104,8 +106,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
                 try
                 {
                     _context.Update(question);
@@ -123,7 +123,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
             ViewData["TestId"] = new SelectList(_context.Tests, "TestId", "TestId", question.TestId);
             return View(question);
         }

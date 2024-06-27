@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Web_TracNghiem_HTSV.Models;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
+    [Authorize]
     public class AnswersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -59,8 +61,8 @@ namespace Web_TracNghiem_HTSV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AnswerId,AnswerDescription,QuestionId")] Answer answer)
         {
-            answer.AnswerId = Guid.NewGuid().ToString();
-            _context.Add(answer);
+                answer.AnswerId = Guid.NewGuid().ToString();
+                _context.Add(answer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent", answer.QuestionId);
@@ -96,7 +98,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return NotFound();
             }
 
-
                 try
                 {
                     _context.Update(answer);
@@ -114,7 +115,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            
+     
             ViewData["QuestionId"] = new SelectList(_context.Questions, "QuestionId", "QuestionContent", answer.QuestionId);
             return View(answer);
         }

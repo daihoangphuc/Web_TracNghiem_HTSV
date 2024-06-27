@@ -5,84 +5,80 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Bài kiểm tra</h1>
+
 @if (User.IsInRole("Administrators"))
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    <div class="text-center mb-4">
+        <a asp-action="Create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Create New</a>
+    </div>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TestName)
-            </th>
 
-            <th>Actions</th>
-
-            @if (User.IsInRole("Administrators"))
+<div class="overflow-x-auto">
+    <table class="table-auto w-full border-collapse border border-gray-200">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2">Tên bài kiểm tra</th>
+                <th class="px-4 py-2">Chức năng</th>
+                @if (User.IsInRole("Administrators"))
+                {
+                    <th class="px-4 py-2">Khóa/Mở khóa</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
             {
-                <th>
-                    @Html.DisplayNameFor(model => model.IsLocked)
-                </th>
-                <th>Lock/Unlock</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            @if (User.IsInRole("Administrators") || (!item.IsLocked && User.IsInRole("Users")))
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TestName)
-                    </td>
-
-                    <td>
+                @if (User.IsInRole("Administrators") || (!item.IsLocked && User.IsInRole("Users")))
+                {
+                    <tr class="border-b border-gray-200">
+                        <td class="px-4 py-2 whitespace-nowrap">@Html.DisplayFor(modelItem => item.TestName)</td>
+                        <td class="px-4 py-2">
+                            @if (User.IsInRole("Administrators"))
+                            {
+                                @if (!item.IsLocked)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a>
+                                }
+                            }
+                            else if (User.IsInRole("Users"))
+                            {
+                                // Kiểm tra xem người dùng đã làm bài kiểm tra này chưa
+                                var testId = item.TestId;
+                                if (ViewBag.UserTestResulted.Contains(testId))
+                                {
+                                    // Nếu đã làm bài, hiển thị nút Kết quả
+                                    <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kết quả</a>
+                                }
+                                else
+                                {
+                                    // Nếu chưa làm bài, hiển thị nút Bắt đầu
+                                    <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
+                                }
+                            }
+                        </td>
                         @if (User.IsInRole("Administrators"))
                         {
-                            if (!item.IsLocked)
-                            {
-                                <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.TestId" class="btn btn-info">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger">Delete</a>
-                            }
+                            <td class="px-4 py-2">
+                                @if (item.IsLocked)
+                                {
+                                    <form asp-action="UnlockTest" asp-route-id="@item.TestId" method="post">
+                                        <button type="submit" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Unlock</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="LockTest" asp-route-id="@item.TestId" method="post">
+                                        <button type="submit" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Lock</button>
+                                    </form>
+                                }
+                            </td>
                         }
-                        else if (User.IsInRole("Users"))
-                        {
-                            @if (!item.IsLocked)
-                            {
-                                <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success">Start Test</a>
-                                <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary">Result</a>
-                            }
-                        }
-                    </td>
-                    @if (User.IsInRole("Administrators"))
-                    {
-                    <td>
-                        @item.IsLocked
-                    </td>
-                    <td>
-
-                            @if (item.IsLocked)
-                            {
-                                <form asp-action="UnlockTest" asp-route-id="@item.TestId" method="post">
-                                    <button type="submit" class="btn btn-primary">Unlock</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-action="LockTest" asp-route-id="@item.TestId" method="post">
-                                    <button type="submit" class="btn btn-danger">Lock</button>
-                                </form>
-                            }
-
-                    </td>
-                    }
-                </tr>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>

@@ -13,6 +13,7 @@ using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
+
     public class TestsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -264,7 +265,19 @@ namespace Web_TracNghiem_HTSV.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tests.ToListAsync());
+            var tests = await _context.Tests.ToListAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Lấy userId của người dùng hiện tại
+
+            // Lấy danh sách các TestResult của người dùng hiện tại
+            var userTestResults = await _context.TestResults
+                .Where(tr => tr.UserId == userId)
+                .Select(tr => tr.TestId)
+                .ToListAsync();
+
+            ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
+
+            return View(tests);
+           /* return View(await _context.Tests.ToListAsync());*/
         }
 
         // GET: Tests/Details/5
@@ -338,8 +351,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     _context.Update(test);
@@ -357,7 +369,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+
             return View(test);
         }
 

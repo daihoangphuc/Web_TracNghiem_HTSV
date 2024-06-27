@@ -17,58 +17,112 @@
     <title>Test Results</title>
     <!-- Import Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .correct-answer {
+            background-color: #d4edda;
+        }
+
+        .wrong-answer {
+            background-color: #f8d7da;
+        }
+
+        .user-selected {
+            background-color: #c3e6cb;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
     <div class="container mx-auto p-4 sm:p-8">
         <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Test Results</h1>
 
-        <!-- Replace with actual dynamic content from your model -->
         <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-            <p class="mb-4"><strong>Test Name:</strong> @ViewBag.TestName</p>
-            <p class="mb-4"><strong>User:</strong> @User.Identity.Name</p>
-            <p class="mb-4"><strong>Total Score:</strong> @ViewBag.TotalScore</p>
+            <p class="mb-4"><strong>Bài kiểm tra:</strong> @ViewBag.TestName</p>
+            <p class="mb-4"><strong>Người làm bài:</strong> @User.Identity.Name</p>
+            <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore/10) điểm (@((int)ViewBag.TotalScore/10)/10)</p>
         </div>
-        @foreach (var question in ViewBag.ListQuestion)
-        {
-            var testResult = GetTestResultForQuestion(question);
-            <!-- Example question block (repeat for each question) -->
-            <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-                <p class="mb-4"><strong>Question:</strong> @question.QuestionContent</p>
-                <div class="grid grid-cols-1 gap-4">
-                    <ul>
-                        @foreach (var answer in question.Answers)
-                        {
-                            <!-- Example options (repeat for each option) -->
-                            <li>
-                                <label class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
-                                    <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
-                                    @answer.AnswerDescription
-                                </label>
-                            </li>
-                        }
-                    </ul>
-                    <p class="mb-2"><strong>Correct Answer:</strong> @question.CorrectAnswer</p>
-                    @if (testResult != null)
-                    {
-                        <p class="mb-2"><strong>Selected Answer:</strong> @testResult.SelectedAnswer</p>
-                        <p class="mb-2"><strong>Result:</strong> @(testResult.IsCorrect ? "Đúng" : "Sai")</p>
-                    }
-                    else
-                    {
-                        <p>Không có kết quả cho câu hỏi này</p>
-                    }
-                </div>
-            </div>
+        @{
+            int i = 1;
         }
-        <!-- End of question block -->
+        @if (ViewBag.ListQuestion != null)
+        {
+            var questions = ViewBag.ListQuestion as List<Web_TracNghiem_HTSV.Models.Question>;
+            if (questions != null)
+            {
+                foreach (var question in questions)
+                {
+                    var testResult = GetTestResultForQuestion(question);
+                    <div class="bg-white shadow-md rounded-lg p-6 mb-8" id="question-@question.QuestionId">
+                        <p class="mb-4"><strong>Câu hỏi @i:</strong> @question.QuestionContent</p>
+                        <div class="grid grid-cols-1 gap-4">
+                            @if(testResult != null)
+                            {
+                                <ul>
+                                    @foreach (var answer in question.Answers.OrderBy(a => a.AnswerDescription))
+                                    {
+                                        var correctAnswer = question.CorrectAnswer;
+                                        var selectedAnswer = testResult?.SelectedAnswer;
+
+                                        <li>
+                                            <label class="block bg-gray-200 p-3 m-3 rounded-lg transition duration-200 answer-label"
+                                                   data-correct="@answer.AnswerDescription"
+                                                   data-selected="@selectedAnswer"
+                                                   data-is-correct="@answer.AnswerDescription"
+                                                   data-is-selected="@selectedAnswer"
+                                                   data-correct-answer="@correctAnswer"
+                                                   data-selected-answer="@selectedAnswer"
+                                                   data-question-id="@question.QuestionId">
+                                                <input type="radio" name="selectedAnswer-@question.QuestionId" value="@answer.AnswerDescription" class="mr-2" @(selectedAnswer == answer.AnswerDescription ? "checked" : "") disabled>
+                                                @answer.AnswerDescription
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>Không có kết quả cho câu hỏi này</p>
+                            }
+                            @*  <p class="mb-2"><strong>Correct Answer:</strong> @question.CorrectAnswer</p> *@
+                            @* @if (testResult != null)
+                            {
+                                <p class="mb-2"><strong>Selected Answer:</strong> @testResult.SelectedAnswer</p>
+                                <p class="mb-2"><strong>Result:</strong> @(testResult.IsCorrect ? "Đúng" : "Sai")</p>
+                            }
+                            else *@
+                        </div>
+                    </div>
+                    i++;
+                }
+            }
+        }
 
         <div class="text-center mt-8">
-            <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200">
+            <a href="/Tests" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200">
                 Back to Quiz
-            </button>
+            </a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const answerLabels = document.querySelectorAll('.answer-label');
+
+            answerLabels.forEach(label => {
+                const correctAnswer = label.dataset.correctAnswer;
+                const selectedAnswer = label.dataset.selectedAnswer;
+                const answerText = label.dataset.correct;
+
+                if (correctAnswer === selectedAnswer && answerText === correctAnswer) {
+                    label.classList.add('user-selected');
+                } else if (answerText === correctAnswer) {
+                    label.classList.add('correct-answer');
+                } else if (answerText === selectedAnswer) {
+                    label.classList.add('wrong-answer');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

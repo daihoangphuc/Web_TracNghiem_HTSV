@@ -1,0 +1,55 @@
+name: CI/CD 
+
+on: 
+  push: 
+    branches: 
+      - FixLockUnLock 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release
+
+      - name: Test project
+        run: dotnet test
+
+      - name: Build Docker image
+        run: |
+          docker build --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                       --build-arg SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }} \
+                       -t phuchoang1910/web_tracnghiem_htsv:latest .
+      #Truyên các biến secret của github vào các tương ứng trong quá trình build docker images
+      - name: Login to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+                   
+      - name: Push Docker image
+        run: |
+          docker push phuchoang1910/web_tracnghiem_htsv:latest
+
+      - name: Deploy to Production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            # Pull and run web app Docker image 
+            docker pull phuchoang1910/web_tracnghiem_htsv:latest
+            docker stop web_tracnghiem_htsv || true && docker rm web_tracnghiem_htsv || true
+            docker run -d --name web_tracnghiem_htsv -p 80:80 -p 443:443 phuchoang1910/web_tracnghiem_htsv:latest
+            

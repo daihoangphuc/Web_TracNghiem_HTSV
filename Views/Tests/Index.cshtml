@@ -20,9 +20,10 @@
         <thead>
             <tr class="bg-gray-100">
                 <th class="px-4 py-2">Tên bài kiểm tra</th>
-                <th class="px-4 py-2">Chức năng</th>
+                <th class="px-4 py-2">Số lượt làm bài</th>
                 @if (User.IsInRole("Administrators"))
                 {
+                    <th class="px-4 py-2">Chức năng</th>
                     <th class="px-4 py-2">Khóa/Mở khóa</th>
                 }
             </tr>
@@ -30,50 +31,60 @@
         <tbody>
             @foreach (var item in Model)
             {
-                @if (User.IsInRole("Administrators") || (!item.IsLocked && User.IsInRole("Users")))
+                var isAdmin = User.IsInRole("Administrators");
+                var testId = item.TestId;
+                var hasQuestions = ViewBag.ListQuestion.Contains(testId);
+                var hasTakenTest = ViewBag.UserTestResulted.Contains(testId);
+
+                // Kiểm tra và hiển thị từng hàng dữ liệu
+                if (isAdmin || (hasQuestions && !item.IsLocked))
                 {
                     <tr class="border-b border-gray-200">
-                        <td class="px-4 py-2 whitespace-nowrap">@Html.DisplayFor(modelItem => item.TestName)</td>
-                        <td class="px-4 py-2">
-                            @if (User.IsInRole("Administrators"))
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            @Html.DisplayFor(modelItem => item.TestName)
+                            @if (!hasQuestions)
                             {
-                                @if (!item.IsLocked)
-                                {
-                                    <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a>
-                                }
-                            }
-                            else if (User.IsInRole("Users"))
-                            {
-                                // Kiểm tra xem người dùng đã làm bài kiểm tra này chưa
-                                var testId = item.TestId;
-                                if (ViewBag.UserTestResulted.Contains(testId))
-                                {
-                                    // Nếu đã làm bài, hiển thị nút Kết quả
-                                    <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kết quả</a>
-                                }
-                                else
-                                {
-                                    // Nếu chưa làm bài, hiển thị nút Bắt đầu
-                                    <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
-                                }
+                                <p class="text-warning">(Chưa có câu hỏi)</p>
                             }
                         </td>
-                        @if (User.IsInRole("Administrators"))
+                        <td class="px-4 py-2">
+                            @if (isAdmin)
+                            {
+                                @if (hasQuestions)
+                                {
+                                    @if (ViewBag.countUserMakeTest != null)
+                                    {
+                                        var userCounts = ViewBag.countUserMakeTest as IEnumerable<dynamic>;
+                                        var userCount = userCounts.FirstOrDefault(tr => tr.TestId == testId)?.UserCount ?? 0;
+                                        <span>@userCount</span>
+                                    }
+                                    else
+                                    {
+                                        <span>0</span>
+                                    }
+                                }
+                            }
+                            else if (hasTakenTest)
+                            {
+                                <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kết quả</a>
+                            }
+                            else
+                            {
+                                <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
+                            }
+                        </td>
+                        @if (isAdmin)
                         {
                             <td class="px-4 py-2">
-                                @if (item.IsLocked)
-                                {
-                                    <form asp-action="UnlockTest" asp-route-id="@item.TestId" method="post">
-                                        <button type="submit" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Unlock</button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <form asp-action="LockTest" asp-route-id="@item.TestId" method="post">
-                                        <button type="submit" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Lock</button>
-                                    </form>
-                                }
+                                <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a>
+                            </td>
+                            <td class="px-4 py-2">
+                                <form asp-action="@((item.IsLocked ? "UnlockTest" : "LockTest"))" asp-route-id="@item.TestId" method="post">
+                                    <button type="submit" class="btn @(item.IsLocked ? "btn-success bg-green-500 hover:bg-green-700" : "btn-danger bg-red-500 hover:bg-red-700") text-white font-bold py-2 px-4 rounded">
+                                        @(item.IsLocked ? "Unlock" : "Lock")
+                                    </button>
+                                </form>
                             </td>
                         }
                     </tr>

@@ -275,7 +275,15 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .Where(tr => tr.UserId == userId)
                 .Select(tr => tr.TestId)
                 .ToListAsync();
+            var lisquestion = await _context.Questions.Select(tr => tr.TestId).ToListAsync();
 
+            var allUserTestResults = await _context.TestResults
+            .GroupBy(tr => tr.TestId)
+            .Select(g => new { TestId = g.Key, UserCount = g.Select(tr => tr.UserId).Distinct().Count() })
+            .ToListAsync();
+
+            ViewBag.countUserMakeTest = allUserTestResults;
+            ViewBag.ListQuestion = lisquestion;
             ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
 
             return View(tests);

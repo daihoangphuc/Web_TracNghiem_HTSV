@@ -46,13 +46,13 @@
             @if (Model.HasNextPage)
             {
                 <button id="confirm-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="submitAndNextPage(@(Model.PageIndex + 1), false)">
-                    Xác nhận
+                    Câu tiếp theo 
                 </button>
             }
             else
             {
                 <button id="confirm-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="submitAndNextPage(@(Model.PageIndex + 1), true)">
-                    Xác nhận
+                    Câu tiếp theo
                 </button>
                 <button id="submit-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" style="display:none;" onclick="submitFinal()">
                     Nộp bài
@@ -67,6 +67,9 @@
     </style>
     <script>
         function submitAndNextPage(nextPage, isLastPage) {
+            var confirmButton = document.getElementById('confirm-button');
+            confirmButton.disabled = true; // Disable nút "Câu tiếp theo"
+
             var form = document.getElementById('quizForm');
             var formData = new FormData(form);
             fetch(form.action, {
@@ -75,26 +78,23 @@
             }).then(response => {
                 if (response.ok) {
                     if (isLastPage) {
-                        document.getElementById('confirm-button').style.display = 'none';
+                        confirmButton.style.display = 'none';
                         document.getElementById('submit-button').style.display = 'block';
                     } else {
                         window.location.href = `@Url.Action("TestDetails", new { id = Model.Items[0]?.TestId, page = ViewBag.NextPage })`;
                     }
                 } else {
                     alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                    confirmButton.disabled = false; // Đảm bảo rằng nút có thể click lại khi có lỗi
                 }
             }).catch(error => {
                 console.error('Error:', error);
                 alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                confirmButton.disabled = false; // Đảm bảo rằng nút có thể click lại khi có lỗi
             });
         }
 
-        //        function submitFinal() {
-        // var form = document.getElementById('quizForm');
-        // form.submit();
-        //  }
         function submitFinal() {
-            // Chuyển hướng đến action Index của controller Other
             window.location.href = '@Url.Action("Index", "Tests")';
         }
 
@@ -122,5 +122,6 @@
             }
         }
     </script>
+
 </body>
 </html>

@@ -101,7 +101,7 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Mật khẩu và nhập lại mật khẩu không khớp.")]
             public string ConfirmPassword { get; set; }
         }
 

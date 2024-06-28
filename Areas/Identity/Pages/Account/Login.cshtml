@@ -1,60 +1,8 @@
 ﻿@page
 @model LoginModel
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 
 <link rel="stylesheet" href="~/Login_Register/src/assets/css/styles.min.css" />
-@* @{
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
-
-    var sessionExpiredMessage = HttpContext.Session.GetString("SessionExpired");
-    if (!string.IsNullOrEmpty(sessionExpiredMessage))
-    {
-        <div id="sessionExpiredModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" style="margin-top: 25%; transform: translateY(-25%)">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                    Thông báo
-                                </h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">
-                                        @sessionExpiredMessage
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" style="background-color: #5d87ff">
-                            OK
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            function closeModal() {
-                document.getElementById('sessionExpiredModal').classList.add('hidden');
-            }
-            document.getElementById('sessionExpiredModal').classList.remove('hidden');
-        </script>
-
-        HttpContext.Session.Remove("SessionExpired");
-    }
-} *@
 
 <!--  Body Wrapper -->
 <div class="page-wrapper pt-5" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
@@ -66,7 +14,7 @@
                     <div class="card mb-0">
                         <div class="card-body">
                             <a href="/Home" class="text-nowrap logo-img text-center d-flex py-3 w-100" style="justify-content: center">
-                                <img src="~/Login_Register/src/assets/images/logos/logo_clb.png" width="180" alt="">
+                                <img src="/assets/img/k2e_icon_logo.png" width="90" alt="">
                             </a>
                             <p class="text-center mb-3">Hi! I'm Hanh Trinh Sinh Vien Club</p>
                             <form id="account" method="post">

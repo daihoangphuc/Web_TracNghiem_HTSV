@@ -129,7 +129,7 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Mật khẩu sai hoặc tài khoản không tồn tại!");
                     return Page();
                 }
             }

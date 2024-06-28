@@ -2713,6 +2713,14 @@
       "PackagePath": "staticwebassets\\assets\\img\\illustration-6.svg"
     },
     {
+      "Id": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\assets\\img\\k2e_icon_logo.png",
+      "PackagePath": "staticwebassets\\assets\\img\\k2e_icon_logo.png"
+    },
+    {
+      "Id": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\assets\\img\\k2e_test_banner.png",
+      "PackagePath": "staticwebassets\\assets\\img\\k2e_test_banner.png"
+    },
+    {
       "Id": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\assets\\img\\logo.png",
       "PackagePath": "staticwebassets\\assets\\img\\logo.png"
     },

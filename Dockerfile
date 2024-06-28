@@ -1,4 +1,4 @@
-﻿﻿# Step 1: Use ASP.NET 8.0 image
+# Step 1: Use ASP.NET 8.0 image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80

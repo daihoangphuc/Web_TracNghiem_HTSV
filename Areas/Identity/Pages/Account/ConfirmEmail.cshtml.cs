@@ -45,7 +45,7 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Chúc mừng bạn đã đăng ký tài khoản thành công." : "Có lỗi trong quá trình xác nhận Email.";
+            StatusMessage = result.Succeeded ? "Chúc mừng bạn đã đăng ký tài khoản thành công. Và bây giờ, hãy đăng nhập." : "Có lỗi trong quá trình xác nhận Email.";
             return Page();
         }
     }

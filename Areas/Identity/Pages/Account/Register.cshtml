@@ -1,75 +1,47 @@
 ﻿@page
 @model RegisterModel
-@* @{
-    ViewData["Title"] = "Register";
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>@ViewData["Title"]</h1> *@
-
-
-@* 
-@section Scripts {
-    <script>
-        function validateEmail() {
-            var emailInput = document.getElementById('Input_Email');
-            var emailPattern = /[A-Za-z0-9._%+-]+@@st\.tvu\.edu\.vn/;
-            if (!emailPattern.test(emailInput.value)) {
-                alert('Vui lòng nhập địa chỉ email đúng định dạng theo email sinh viên (Mssv@@st.tvu.edu.vn)');
-                return false; // Ngăn chặn gửi form
-            }
-            return true; // Cho phép gửi form
-        }
-    </script>
-    <partial name="_ValidationScriptsPartial" />
-} *@
-
-<link rel="stylesheet" href="~/Login_Register/src/assets/css/styles.min.css" />
-
-<!--  Body Wrapper -->
-<div class="page-wrapper pt-5" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-     data-sidebar-position="fixed" data-header-position="fixed">
-    <div class="position-relative overflow-hidden  min-vh-100 d-flex align-items-center justify-content-center">
-        <div class="d-flex align-items-center justify-content-center w-100">
-            <div class="row justify-content-center w-100">
-                <div class="col-md-8 col-lg-6 col-xxl-3" style="width: 500px; margin-top: -180px">
-                    <div class="card mb-0">
-                        <div class="card-body">
-                            <a href="/Home" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="/assets/img/k2e_icon_logo.png" width="90" style="margin-left: 50%; transform:translateX(-50%)" alt="">
-                            </a>
-                            <p class="text-center">Hi! I'm Hanh Trinh Sinh Vien Club</p>
-                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" onsubmit="return validateEmail()">
-                                <div class="mb-3">
-                                    <label asp-for="Input.Email" for="exampleInputtext1" class="form-label">Email</label>
-                                    <input asp-for="Input.Email" type="email" id="Input_Email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" aria-required="true" required>
-                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="Input.Password" for="exampleInputEmail1" class="form-label">Mật khẩu</label>
-                                    <input asp-for="Input.Password" type="password" class="form-control" id="exampleInputPassword1" aria-describedby="textHelp" aria-required="true" required>
-                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                                </div>
-                                <div class="mb-4">
-                                    <label asp-for="Input.ConfirmPassword" for="exampleInputPassword1" class="form-label">Nhập lại mật khẩu</label>
-                                    <input asp-for="Input.ConfirmPassword" type="password" class="form-control" id="exampleInputPassword1" aria-required="true" required>
-                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                                </div>
-                                <button id="registerSubmit" type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Đăng ký</button>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    Nếu đã có tài khoản
-                                    <a class="text-primary fw-bold ms-2" href="/Identity/Account/Login">Đăng nhập</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow--none rounded-lg w-full sm:w-96" style="padding-left: 25px; padding-right: 25px">
+        <a href="/Home" class="flex justify-center mb-4">
+            <img src="/assets/img/k2e_icon_logo.png" width="90" alt="Logo">
+        </a>
+        <p class="text-center mb-4">Hi! I'm Hanh Trinh Sinh Vien Club</p>
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" onsubmit="return validateEmail()" class="space-y-4">
+            <div class="mb-4">
+                <label asp-for="Input.Email" for="Input_Email" class="block mb-1">Email</label>
+                <input asp-for="Input.Email" type="email" id="Input_Email" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" aria-describedby="emailHelp" aria-required="true" required>
+                <span asp-validation-for="Input.Email" class="text-sm text-red-500"></span>
             </div>
-        </div>
+            <div class="mb-4">
+                <label asp-for="Input.Password" for="Input_Password" class="block mb-1">Mật khẩu</label>
+                <input asp-for="Input.Password" type="password" id="Input_Password" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" aria-describedby="textHelp" aria-required="true" required>
+                <span asp-validation-for="Input.Password" class="text-sm text-red-500"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Input.ConfirmPassword" for="Input_ConfirmPassword" class="block mb-1">Nhập lại mật khẩu</label>
+                <input asp-for="Input.ConfirmPassword" type="password" id="Input_ConfirmPassword" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" aria-required="true" required>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-sm text-red-500"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg text-lg w-full">
+                Đăng ký
+            </button>
+            <div class="flex items-center justify-center text-sm mt-4">
+                Nếu đã có tài khoản
+                <a class="text-primary font-semibold ml-2" href="/Identity/Account/Login">Đăng nhập</a>
+            </div>
+        </form>
     </div>
 </div>
-<script src="~/Login_Register/src/assets/libs/jquery/dist/jquery.min.js"></script>
-<script src="~/Login_Register/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+@section Scripts {
+    <script src="~/Login_Register/src/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/Login_Register/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
 
 
 @* @page

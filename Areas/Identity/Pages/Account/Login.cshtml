@@ -1,58 +1,51 @@
 ﻿@page
 @model LoginModel
 
+@* <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> *@
 
-<link rel="stylesheet" href="~/Login_Register/src/assets/css/styles.min.css" />
 
-<!--  Body Wrapper -->
-<div class="page-wrapper pt-5" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-     data-sidebar-position="fixed" data-header-position="fixed">
-    <div class="position-relative overflow-hidden min-vh-100 d-flex align-items-center justify-content-center">
-        <div class="d-flex align-items-center justify-content-center w-100">
-            <div class="row justify-content-center w-100">
-                <div class="col-md-8 col-lg-6 col-xxl-3" style="width: 500px; margin-top: -180px">
-                    <div class="card mb-0">
-                        <div class="card-body">
-                            <a href="/Home" class="text-nowrap logo-img text-center d-flex py-3 w-100" style="justify-content: center">
-                                <img src="/assets/img/k2e_icon_logo.png" width="90" alt="">
-                            </a>
-                            <p class="text-center mb-3">Hi! I'm Hanh Trinh Sinh Vien Club</p>
-                            <form id="account" method="post">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="mb-3">
-                                    <label asp-for="Input.Email" for="exampleInputEmail1" class="form-label">Email</label>
-                                    <input type="email" asp-for="Input.Email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" aria-required="true" required>
-                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                                </div>
-                                <div class="mb-4">
-                                    <label asp-for="Input.Password" for="exampleInputPassword1" class="form-label">Mật khẩu</label>
-                                    <input asp-for="Input.Password" type="password" class="form-control" id="exampleInputPassword1" aria-required="true">
-                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
-                                        <label class="form-check-label text-dark" for="flexCheckChecked">
-                                            Nhớ mật khẩu
-                                        </label>
-                                    </div>
-                                    <a class="text-primary fw-bold" id="forgot-password" asp-page="./ForgotPassword">Bạn quên mật khẩu?</a>
-                                </div>
-                                <button id="login-submit" type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Đăng nhập</button>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a class="text-primary fw-bold ms-2" asp-page="./Register">Đăng kí tài khoản mới.</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="min-h-screen flex items-center justify-center pt-6">
+    <div class="bg-white shadow-none rounded-none w-full sm:w-96" style="padding-left: 25px; padding-right: 25px">
+        <a href="/Home" class="flex justify-center mb-4">
+            <img src="/assets/img/k2e_icon_logo.png" width="90" alt="Logo">
+        </a>
+        <p class="text-center mb-4 text-gray-600">Hi! I'm Hanh Trinh Sinh Vien Club</p>
+        <form id="account" method="post" class="space-y-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Input.Email" for="exampleInputEmail1" class="block mb-1">Email</label>
+                <input type="email" asp-for="Input.Email" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="exampleInputEmail1" aria-describedby="emailHelp" aria-required="true" required>
+                <span asp-validation-for="Input.Email" class="text-sm text-red-500"></span>
             </div>
-        </div>
+            <div>
+                <label asp-for="Input.Password" for="exampleInputPassword1" class="block mb-1">Mật khẩu</label>
+                <input asp-for="Input.Password" type="password" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="exampleInputPassword1" aria-required="true" required>
+                <span asp-validation-for="Input.Password" class="text-sm text-red-500"></span>
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input class="form-checkbox h-4 w-4 text-primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                    <label class="ml-2 text-sm text-gray-600" for="flexCheckChecked">
+                        Nhớ mật khẩu
+                    </label>
+                </div>
+                <a class="text-primary font-semibold text-sm" id="forgot-password" asp-page="./ForgotPassword">Bạn quên mật khẩu?</a>
+            </div>
+            <button id="login-submit" type="submit" class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg text-lg w-full">
+                Đăng nhập
+            </button>
+
+            <div class="flex items-center justify-center">
+                <a class="text-primary font-semibold ml-2" asp-page="./Register">Đăng kí tài khoản mới</a>
+            </div>
+        </form>
     </div>
 </div>
-<script src="~/Login_Register/src/assets/libs/jquery/dist/jquery.min.js"></script>
-<script src="~/Login_Register/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+@section Scripts {
+    <script src="~/Login_Register/src/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/Login_Register/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
 
 
 

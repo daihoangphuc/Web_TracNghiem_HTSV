@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6tT0S2M9lCgiAU6ae3owcbQj9cPOlKBqqrPudldarPf9CaiOkfT40ObFbn5xEpfEOSPZmcA2KM0NpGscGj8fhQ==",
+  "dgSpecHash": "LOM7WBcKnAM4O45F4elGm8iVWOPU0c5RMpT0tIDDmogGWFpJ1GKAmi8zfW14TX690D5GUY6m4ZlLG5fhpouTTQ==",
   "success": true,
   "projectFilePath": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV.csproj",
   "expectedPackageFiles": [
@@ -117,6 +117,7 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.19.6\\microsoft.visualstudio.azure.containers.tools.targets.1.19.6.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration\\8.0.2\\microsoft.visualstudio.web.codegeneration.8.0.2.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.core\\8.0.2\\microsoft.visualstudio.web.codegeneration.core.8.0.2.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.design\\8.0.2\\microsoft.visualstudio.web.codegeneration.design.8.0.2.nupkg.sha512",

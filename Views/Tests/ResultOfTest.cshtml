@@ -35,15 +35,53 @@
 <body class="bg-gray-100">
     <div class="container mx-auto p-4 sm:p-8">
         <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Kết quả</h1>
-
+        @{
+            int i = 1;
+            var latestSubmittedAt = ViewBag.LatestSubmittedAt as DateTime?;
+            var timeTaken = ViewBag.TimeTaken as TimeSpan?;
+        }
         <div class="bg-white shadow-md rounded-lg p-6 mb-8">
             <p class="mb-4"><strong>Bài kiểm tra:</strong> @ViewBag.TestName</p>
             <p class="mb-4"><strong>Người làm bài:</strong> @User.Identity.Name</p>
-            <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore/10) điểm @* (@((int)ViewBag.TotalScore/10)/10) *@</p>
+            <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore / 10) điểm @* (@((int)ViewBag.TotalScore/10)/10) *@</p>
+            <p class="mb-4"><strong>Thời gian làm bài:</strong>
+                @if (timeTaken.HasValue)
+                {
+                    // Chỉ hiển thị giờ nếu thời gian lớn hơn 60 phút
+                    if (timeTaken.Value.TotalMinutes >= 60)
+                    {
+                        <span>@timeTaken.Value.Hours giờ</span>
+
+                        // Nếu có giờ thì hiển thị dấu phẩy trước phút
+                        if (timeTaken.Value.TotalSeconds >= 60)
+                        {
+                            <span> </span>
+                        }
+                    }
+
+                    // Chỉ hiển thị phút nếu thời gian lớn hơn 60 giây hoặc có giờ
+                    if (timeTaken.Value.TotalSeconds >= 60)
+                    {
+                        <span>@timeTaken.Value.Minutes phút</span>
+
+                        // Nếu có phút thì hiển thị dấu phẩy trước giây
+                        if (timeTaken.Value.TotalSeconds > 60)
+                        {
+                            <span> </span>
+                        }
+                    }
+
+                    // Hiển thị giây
+                    <span>@timeTaken.Value.Seconds giây</span>
+                }
+                else
+                {
+                <p>Không có</p>
+                }
+            </p>
+            <p class="mb-4"><strong>Nộp bài lúc:</strong> @latestSubmittedAt.Value.ToString("HH:mm:ss '('dd/MM/yyyy'')") </p>
         </div>
-        @{
-            int i = 1;
-        }
+
         @if (ViewBag.ListQuestion != null)
         {
             var questions = ViewBag.ListQuestion as List<Web_TracNghiem_HTSV.Models.Question>;

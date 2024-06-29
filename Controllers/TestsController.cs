@@ -150,6 +150,21 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .Where(tr => tr.TestId == id && tr.UserId == userId)
                 .Include(tr => tr.User)
                 .ToListAsync();
+            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.SubmittedAt).FirstOrDefault();
+
+            var latestSubmittedResult = userTestResults.OrderByDescending(tr => tr.SubmittedAt).FirstOrDefault();
+
+            TimeSpan? timeTaken = null;
+
+            if (earliestSubmittedResult != null && latestSubmittedResult != null)
+            {
+                timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.SubmittedAt;
+            }
+
+            // Lưu vào ViewBag để sử dụng trong View
+            ViewBag.TimeTaken = timeTaken;
+
+            ViewBag.LatestSubmittedAt = latestSubmittedResult?.SubmittedAt;
 
             ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
 

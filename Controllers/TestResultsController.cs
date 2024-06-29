@@ -21,6 +21,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             _context = context;
         }
 
+
         // Phương thức kiểm tra xem người dùng đã làm bài kiểm tra chưa
         public async Task<IActionResult> HasUserTakenTest(string userId, string testId)
         {

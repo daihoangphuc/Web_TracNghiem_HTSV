@@ -11,11 +11,10 @@
     <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Quản trị User</h1>
 
     <form asp-controller="UserRoles" asp-action="Index" method="get" class="mb-4">
-        <div class="flex items-center">
-            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search by Username"
-                   class="form-input w-full py-2 px-4 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500" />
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-r-md hover:bg-blue-700">
-                Search
+        <div class="search-container">
+            <input type="text" class="search-input w-full md:w-80 mb-2 md:mb-0" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Nhập tên"/>
+            <button type="submit" class="search-button ml-2">
+                <i class="bi bi-search"></i>
             </button>
         </div>
     </form>
@@ -24,10 +23,10 @@
         <table class="min-w-full bg-white border rounded-md">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 border-b">Username</th>
+                    <th class="px-4 py-2 border-b">Tên</th>
                     <th class="px-4 py-2 border-b">Email</th>
-                    <th class="px-4 py-2 border-b">Edit</th>
-                    <th class="px-4 py-2 border-b">Delete</th>
+                    <th class="px-4 py-2 border-b">Đổi quyền</th>
+                    <th class="px-4 py-2 border-b">Xóa</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,14 +38,14 @@
                         <td class="px-4 py-2 border-b">
                             <form asp-action="EditRole" asp-route-id="@user.Id" method="get">
                                 <button type="submit" class="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 whitespace-nowrap">
-                                    Edit Roles
+                                    Chỉnh sửa
                                 </button>
                             </form>
                         </td>
                         <td class="px-4 py-2 border-b">
                                 <form asp-action="Delete" asp-route-id="@user.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa user này?');">
                                     <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">
-                                        Delete
+                                        Xóa
                                     </button>
                                 </form>
                         </td>
@@ -73,3 +72,58 @@
     </nav>
 
 </div>
+
+
+<style>
+
+    /* Form */
+    .search-form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+
+    }
+
+    .search-container {
+        position: relative;
+        width: 100%; /* Thanh tìm kiếm sẽ căng toàn bộ chiều rộng của phần tử cha */
+        margin: 0 auto;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 20px;
+        border: 1px solid #38b7fd;
+        border-radius: 25px;
+        font-size: 16px;
+        outline: none;
+        background-color: transparent;
+    }
+
+    .search-button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding-bottom: 10px;
+    }
+
+        .search-button i {
+            font-size: 20px;
+        }
+
+    @@media (min-width: 640px) {
+        .search-container {
+            width: 700px;
+        }
+
+        .search-input {
+            width: 700px; /* Đặt lại kích thước cho trường hợp màn hình lớn hơn 640px */
+            min-width: 200px; /* Đặt kích thước tối thiểu cho ô tìm kiếm */
+        }
+    }
+
+</style>

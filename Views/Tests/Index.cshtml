@@ -20,11 +20,23 @@
         <thead>
             <tr class="bg-gray-100">
                 <th class="px-4 py-2">Tên bài kiểm tra</th>
-                <th class="px-4 py-2">Số lượt làm bài</th>
+                @if (User.IsInRole("Administrators"))
+                 {
+                    <th class="px-4 py-2">
+
+                        Số lượt làm bài
+                    </th>
+                }
+                else
+                {
+                    <th class="px-4 py-2">
+                        Chức năng
+                    </th>
+                }
                 @if (User.IsInRole("Administrators"))
                 {
                     <th class="px-4 py-2">Chức năng</th>
-                    <th class="px-4 py-2">Khóa/Mở khóa</th>
+                    <th class="px-4 py-2">Khóa/Mở</th>
                 }
             </tr>
         </thead>

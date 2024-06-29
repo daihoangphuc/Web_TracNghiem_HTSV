@@ -151,6 +151,8 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .Include(tr => tr.User)
                 .ToListAsync();
 
+            ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
+
             ViewBag.UserId = userId;
             ViewBag.TestName = test.TestName;
             ViewBag.TotalScore = userTestResults.Where(u => u.UserId == userId).Sum(tr => tr.TotalScore);
@@ -275,6 +277,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .Where(tr => tr.UserId == userId)
                 .Select(tr => tr.TestId)
                 .ToListAsync();
+            ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
             var lisquestion = await _context.Questions.Select(tr => tr.TestId).ToListAsync();
 
             var allUserTestResults = await _context.TestResults
@@ -284,7 +287,7 @@ namespace Web_TracNghiem_HTSV.Controllers
 
             ViewBag.countUserMakeTest = allUserTestResults;
             ViewBag.ListQuestion = lisquestion;
-            ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
+
 
             return View(tests);
            /* return View(await _context.Tests.ToListAsync());*/

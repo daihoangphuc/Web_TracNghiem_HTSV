@@ -265,11 +265,19 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
 
+
         // GET: Tests
-        [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            var tests = await _context.Tests.ToListAsync();
+            var tests = from t in _context.Tests
+                        select t;
+
+            // Apply search filter if searchString is not null or empty
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                tests = tests.Where(t => t.TestName.Contains(searchString));
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Lấy userId của người dùng hiện tại
 
             // Lấy danh sách các TestResult của người dùng hiện tại
@@ -278,21 +286,33 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .Select(tr => tr.TestId)
                 .ToListAsync();
             ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
+
             var lisquestion = await _context.Questions.Select(tr => tr.TestId).ToListAsync();
-
-            var allUserTestResults = await _context.TestResults
-            .GroupBy(tr => tr.TestId)
-            .Select(g => new { TestId = g.Key, UserCount = g.Select(tr => tr.UserId).Distinct().Count() })
-            .ToListAsync();
-
-            ViewBag.countUserMakeTest = allUserTestResults;
             ViewBag.ListQuestion = lisquestion;
 
+            var allUserTestResults = await _context.TestResults
+                .GroupBy(tr => tr.TestId)
+                .Select(g => new { TestId = g.Key, UserCount = g.Select(tr => tr.UserId).Distinct().Count() })
+                .ToListAsync();
+            ViewBag.countUserMakeTest = allUserTestResults;
 
-            return View(tests);
-           /* return View(await _context.Tests.ToListAsync());*/
+            // Kiểm tra quyền Admin
+            var isAdmin = User.IsInRole("Administrators");
+
+            if (!isAdmin)
+            {
+                // Lọc các bài test bị khóa và những bài test không có câu hỏi
+                tests = tests.Where(t => !t.IsLocked && _context.Questions.Any(q => q.TestId == t.TestId));
+            }
+
+            // Define page size
+            int pageSize = 5;
+
+            // Create paginated list
+            var paginatedTests = await PaginatedList<Test>.CreateAsync(tests.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            return View(paginatedTests);
         }
-
         // GET: Tests/Details/5
         public async Task<IActionResult> Details(string id)
         {

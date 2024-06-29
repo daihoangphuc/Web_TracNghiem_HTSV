@@ -40,7 +40,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 users = users.Where(x => x.UserName.Contains(searchString));
             }
 
-            int pageSize = 10; // Số lượng mục trên mỗi trang
+            int pageSize = 5; // Số lượng mục trên mỗi trang
             return View(await PaginatedList<User>.CreateAsync(users.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

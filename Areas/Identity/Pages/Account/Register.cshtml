@@ -5,19 +5,20 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="mt-6">
 <div class="min-h-screen flex items-center justify-center">
     <div class="bg-white shadow--none rounded-lg w-full sm:w-96" style="padding-left: 25px; padding-right: 25px">
-        <a href="/Home" class="flex justify-center mb-4">
+        <a href="/Home" class="flex justify-center mb-2">
             <img src="/assets/img/k2e_icon_logo.png" width="90" alt="Logo">
         </a>
         <p class="text-center mb-4">Hi! I'm Hanh Trinh Sinh Vien Club</p>
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" onsubmit="return validateEmail()" class="space-y-4">
-            <div class="mb-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" onsubmit="return validateEmail()" class="">
+            <div class="mb-2">
                 <label asp-for="Input.Email" for="Input_Email" class="block mb-1">Email</label>
                 <input asp-for="Input.Email" type="email" id="Input_Email" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" aria-describedby="emailHelp" aria-required="true" required>
                 <span asp-validation-for="Input.Email" class="text-sm text-red-500"></span>
             </div>
-            <div class="mb-4">
+            <div class="mb-2">
                 <label asp-for="Input.Password" for="Input_Password" class="block mb-1">Mật khẩu</label>
                 <input asp-for="Input.Password" type="password" id="Input_Password" class="form-input w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" aria-describedby="textHelp" aria-required="true" required>
                 <span asp-validation-for="Input.Password" class="text-sm text-red-500"></span>
@@ -37,7 +38,7 @@
         </form>
     </div>
 </div>
-
+</div>
 @section Scripts {
     <script src="~/Login_Register/src/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/Login_Register/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -129,7 +129,10 @@ namespace Web_TracNghiem_HTSV.Controllers
         [Authorize]
         public async Task<IActionResult> ResultOfTest(string id)
         {
-            if (id == null)
+            // Giải mã `TestId` từ Base64
+            var deCodeId = EncodeUrl.Decode(id);
+
+            if (string.IsNullOrEmpty(deCodeId))
             {
                 return NotFound();
             }
@@ -139,7 +142,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             var test = await _context.Tests
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync(t => t.TestId == id);
+                .FirstOrDefaultAsync(t => t.TestId == deCodeId);
 
             if (test == null)
             {
@@ -147,11 +150,11 @@ namespace Web_TracNghiem_HTSV.Controllers
             }
 
             var userTestResults = await _context.TestResults
-                .Where(tr => tr.TestId == id && tr.UserId == userId)
+                .Where(tr => tr.TestId == deCodeId && tr.UserId == userId)
                 .Include(tr => tr.User)
                 .ToListAsync();
-            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.SubmittedAt).FirstOrDefault();
 
+            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.SubmittedAt).FirstOrDefault();
             var latestSubmittedResult = userTestResults.OrderByDescending(tr => tr.SubmittedAt).FirstOrDefault();
 
             TimeSpan? timeTaken = null;
@@ -161,31 +164,18 @@ namespace Web_TracNghiem_HTSV.Controllers
                 timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.SubmittedAt;
             }
 
-            // Lưu vào ViewBag để sử dụng trong View
             ViewBag.TimeTaken = timeTaken;
-
             ViewBag.LatestSubmittedAt = latestSubmittedResult?.SubmittedAt;
-
-            ViewBag.UserTestResulted = userTestResults; // Lưu danh sách TestId mà người dùng đã làm vào ViewBag
-
+            ViewBag.UserTestResulted = userTestResults;
             ViewBag.UserId = userId;
             ViewBag.TestName = test.TestName;
             ViewBag.TotalScore = userTestResults.Where(u => u.UserId == userId).Sum(tr => tr.TotalScore);
             ViewBag.ListQuestion = test.Questions.ToList();
             ViewBag.ListTestResult = userTestResults;
 
-
-
-            var userTestResults1 = await _context.Tests
-              .Include(tr => tr.TestResults)
-              .Include(tr => tr.Questions)
-                    .ThenInclude(q => q.Answers)
-              .ToListAsync();
-
-
-            ViewBag.UserTestResult = userTestResults1;
             return View(test);
         }
+
 
         // TestsController.cs
 

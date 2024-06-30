@@ -76,10 +76,19 @@
                 }
                 else
                 {
-                <p>Không có</p>
+                @* <p>Không có</p> *@
                 }
             </p>
-            <p class="mb-4"><strong>Nộp bài lúc:</strong> @latestSubmittedAt.Value.ToString("HH:mm:ss '('dd/MM/yyyy'')") </p>
+            @if(latestSubmittedAt.HasValue)
+            {
+                <p class="mb-4"><strong>Nộp bài lúc:</strong> 
+                    @latestSubmittedAt.Value.ToString("HH:mm:ss '('dd/MM/yyyy'')")
+                </p>
+            }
+            else
+            {
+                <p class="mb-4"><strong>Nộp bài lúc:</strong> Không có giá trị </p>
+            }
         </div>
 
         @if (ViewBag.ListQuestion != null)

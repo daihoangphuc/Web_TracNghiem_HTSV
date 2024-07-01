@@ -21,7 +21,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-
+builder.Services.AddSession();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -41,6 +41,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession(); // Thêm dòng này
 
 app.UseRouting();
 

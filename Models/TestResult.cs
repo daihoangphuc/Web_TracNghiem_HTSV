@@ -22,7 +22,9 @@ namespace Web_TracNghiem_HTSV.Models
         public string? QuestionId { get; set; }
         public string SelectedAnswer { get; set; }
         public bool IsCorrect { get; set; } // Is the selected answer correct?
+        public DateTime StartedAt { get; set; }
         public DateTime SubmittedAt { get; set; } // Submission time
+
         public int TotalScore { get; set; } // Total score achieved
 
 

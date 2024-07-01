@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_TracNghiem_HTSV.Data;
 
@@ -11,9 +12,11 @@ using Web_TracNghiem_HTSV.Data;
 namespace Web_TracNghiem_HTSV.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240701092307_addTimeTaken")]
+    partial class addTimeTaken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,15 +236,15 @@ namespace Web_TracNghiem_HTSV.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TestId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<TimeSpan>("TimeTaken")
+                        .HasColumnType("time");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");

@@ -253,6 +253,11 @@ namespace Web_TracNghiem_HTSV.Controllers
 
                 // Kiểm tra đáp án đã chọn có đúng không
                 bool isCorrect = correctAnswer == selectedAnswer;
+                // Lấy múi giờ Việt Nam
+                TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+                // Lấy thời gian hiện tại theo UTC
+                DateTime utcNow = DateTime.UtcNow;
 
                 // Tạo một bản ghi TestResult
                 var testResult = new TestResult
@@ -260,7 +265,8 @@ namespace Web_TracNghiem_HTSV.Controllers
                     TestResultId = Guid.NewGuid().ToString(),
                     UserId = userId,
                     TestId = testId,
-                    SubmittedAt = DateTime.Now,
+                    SubmittedAt = TimeZoneInfo.ConvertTimeFromUtc(utcNow, vietnamTimeZone),
+
                     IsCorrect = isCorrect,
                     QuestionId = questionId,
                     SelectedAnswer = selectedAnswer,

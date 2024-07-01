@@ -23,12 +23,13 @@
         {
             <div id="question-container-@question.QuestionId" class="bg-white shadow-md rounded-lg p-6 mb-8 quiz-card">
                 <p class="mb-4 text-lg"><strong>Câu hỏi @Model.PageIndex</strong>: @question.QuestionContent</p>
+                <div id="timer-@question.QuestionId" class="text-red-600 font-bold text-lg">15</div> <!-- Timer Div -->
                 <div class="grid grid-cols-1 gap-4">
                     @using (Html.BeginForm("MakeTestResult", "Tests", FormMethod.Post, new { id = "quizForm" }))
                     {
                         @Html.Hidden("TestId", question.TestId)
-                        @Html.Hidden("QuestionId", question.QuestionId) <!-- Truyền thêm questionId -->
-                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerDescription[0]).ToList(); // Sắp xếp theo ký tự đầu tiên của AnswerDescription
+                        @Html.Hidden("QuestionId", question.QuestionId)
+                        var sortedAnswers = question.Answers.OrderBy(a => a.AnswerDescription[0]).ToList();
 
                         foreach (var answer in sortedAnswers)
                         {
@@ -40,6 +41,7 @@
                     }
                 </div>
             </div>
+
         }
 
         <div class="text-center mt-8">
@@ -66,6 +68,28 @@
         }
     </style>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var timerElement = document.getElementById("timer-@Model.Items[0]?.QuestionId");
+            if (timerElement) {
+                startTimer(timerElement, 15); // Bắt đầu đếm ngược 15 giây cho câu hỏi đầu tiên
+            }
+        });
+
+        function startTimer(element, duration) {
+            var timer = duration, seconds;
+            var intervalId = setInterval(function () {
+                seconds = timer;
+                element.textContent = seconds;
+
+                if (--timer < 0) {
+                    clearInterval(intervalId); // Dừng bộ đếm
+                    alert('Hết thời gian! Chuyển đến câu hỏi tiếp theo.');
+                    // Gọi hàm chuyển sang câu hỏi tiếp theo hoặc tự động submit
+                    submitAndNextPage(@(Model.PageIndex + 1), !Model.HasNextPage);
+                }
+            }, 1000); // Đếm ngược mỗi giây
+        }
+
         function submitAndNextPage(nextPage, isLastPage) {
             var confirmButton = document.getElementById('confirm-button');
             confirmButton.disabled = true; // Disable nút "Câu tiếp theo"
@@ -122,6 +146,7 @@
             }
         }
     </script>
+
 
 </body>
 </html>

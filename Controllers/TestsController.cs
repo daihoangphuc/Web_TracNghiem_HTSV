@@ -180,6 +180,7 @@ namespace Web_TracNghiem_HTSV.Controllers
         // TestsController.cs
 
         [Authorize]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> SelectTest()
         {
             var tests = await _context.Tests.ToListAsync(); // Lấy danh sách các bài test từ database

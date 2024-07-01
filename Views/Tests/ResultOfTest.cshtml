@@ -42,7 +42,7 @@
         }
         <div class="bg-white shadow-md rounded-lg p-6 mb-8">
             <p class="mb-4"><strong>Bài kiểm tra:</strong> @ViewBag.TestName</p>
-            <p class="mb-4"><strong>Người làm bài:</strong> @User.Identity.Name</p>
+            <p class="mb-4"><strong>Người làm bài:</strong> @User.Identity.Name.Substring(0, User.Identity.Name.IndexOf("@"))</p>
             <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore / 10) điểm @* (@((int)ViewBag.TotalScore/10)/10) *@</p>
             <p class="mb-4"><strong>Thời gian làm bài:</strong>
                 @if (timeTaken.HasValue)

@@ -23,7 +23,7 @@ namespace Web_TracNghiem_HTSV.Controllers
 
 
         // Phương thức kiểm tra xem người dùng đã làm bài kiểm tra chưa
-        public async Task<IActionResult> HasUserTakenTest(string userId, string testId)
+/*        public async Task<IActionResult> HasUserTakenTest(string userId, string testId)
         {
             var testResult = await _context.TestResults
                 .FirstOrDefaultAsync(tr => tr.UserId == userId && tr.TestId == testId);
@@ -36,7 +36,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             {
                 return Json(new { hasTaken = false });
             }
-        }
+        }*/
 
             // GET: TestResults
             public async Task<IActionResult> Index()

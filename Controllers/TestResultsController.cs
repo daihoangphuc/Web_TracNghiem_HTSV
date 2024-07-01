@@ -11,7 +11,8 @@ using Web_TracNghiem_HTSV.Models;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
+
     public class TestResultsController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -3,7 +3,6 @@
     public Web_TracNghiem_HTSV.Models.TestResult GetTestResultForQuestion(Web_TracNghiem_HTSV.Models.Question question)
     {
         var listTestResult = ViewBag.ListTestResult as List<Web_TracNghiem_HTSV.Models.TestResult>;
-        // Find the TestResult that matches the Question's TestId and UserId
         return listTestResult.FirstOrDefault(tr => tr.QuestionId == question.QuestionId && tr.UserId == ViewBag.UserId);
     }
 }
@@ -15,7 +14,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Results</title>
-    <!-- Import Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .correct-answer {
@@ -43,45 +41,34 @@
         <div class="bg-white shadow-md rounded-lg p-6 mb-8">
             <p class="mb-4"><strong>Bài kiểm tra:</strong> @ViewBag.TestName</p>
             <p class="mb-4"><strong>Người làm bài:</strong> @User.Identity.Name.Substring(0, User.Identity.Name.IndexOf("@"))</p>
-            <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore / 10) điểm @* (@((int)ViewBag.TotalScore/10)/10) *@</p>
-            <p class="mb-4"><strong>Thời gian làm bài:</strong>
+            <p class="mb-4"><strong>Tổng điểm:</strong> @((int)ViewBag.TotalScore / 10) điểm</p>
+            <p class="mb-4">
+                <strong>Thời gian làm bài:</strong>
                 @if (timeTaken.HasValue)
                 {
-                    // Chỉ hiển thị giờ nếu thời gian lớn hơn 60 phút
                     if (timeTaken.Value.TotalMinutes >= 60)
                     {
                         <span>@timeTaken.Value.Hours giờ</span>
-
-                        // Nếu có giờ thì hiển thị dấu phẩy trước phút
                         if (timeTaken.Value.TotalSeconds >= 60)
                         {
                             <span> </span>
                         }
                     }
-
-                    // Chỉ hiển thị phút nếu thời gian lớn hơn 60 giây hoặc có giờ
                     if (timeTaken.Value.TotalSeconds >= 60)
                     {
                         <span>@timeTaken.Value.Minutes phút</span>
-
-                        // Nếu có phút thì hiển thị dấu phẩy trước giây
                         if (timeTaken.Value.TotalSeconds > 60)
                         {
                             <span> </span>
                         }
                     }
-
-                    // Hiển thị giây
                     <span>@timeTaken.Value.Seconds giây</span>
                 }
-                else
-                {
-                @* <p>Không có</p> *@
-                }
             </p>
-            @if(latestSubmittedAt.HasValue)
+            @if (latestSubmittedAt.HasValue)
             {
-                <p class="mb-4"><strong>Nộp bài lúc:</strong> 
+                <p class="mb-4">
+                    <strong>Nộp bài lúc:</strong>
                     @latestSubmittedAt.Value.ToString("HH:mm:ss '('dd/MM/yyyy'')")
                 </p>
             }
@@ -101,10 +88,9 @@
                     var testResult = GetTestResultForQuestion(question);
                     @if (testResult != null)
                     {
-                    <div class="bg-white shadow-md rounded-lg p-6 mb-8" id="question-@question.QuestionId">
-                        <p class="mb-4"><strong>Câu hỏi @i:</strong> @question.QuestionContent</p>
-                        <div class="grid grid-cols-1 gap-4">
-
+                        <div class="bg-white shadow-md rounded-lg p-6 mb-8" id="question-@question.QuestionId">
+                            <p class="mb-4"><strong>Câu hỏi @i:</strong> @question.QuestionContent</p>
+                            <div class="grid grid-cols-1 gap-4">
                                 <ul>
                                     @foreach (var answer in question.Answers.OrderBy(a => a.AnswerDescription))
                                     {
@@ -126,16 +112,8 @@
                                         </li>
                                     }
                                 </ul>
-                            
-                            @*  <p class="mb-2"><strong>Correct Answer:</strong> @question.CorrectAnswer</p> *@
-                            @* @if (testResult != null)
-                            {
-                                <p class="mb-2"><strong>Selected Answer:</strong> @testResult.SelectedAnswer</p>
-                                <p class="mb-2"><strong>Result:</strong> @(testResult.IsCorrect ? "Đúng" : "Sai")</p>
-                            }
-                            else *@
+                            </div>
                         </div>
-                    </div>
                     }
                     else
                     {
@@ -179,6 +157,7 @@
 </body>
 
 </html>
+
 
 
 

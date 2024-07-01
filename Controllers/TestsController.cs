@@ -139,21 +139,29 @@ namespace Web_TracNghiem_HTSV.Controllers
 
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var test = await _context.Tests
+            // Sử dụng IQueryable để truy vấn Test
+            var testQuery = _context.Tests
                 .Include(t => t.Questions)
                     .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync(t => t.TestId == deCodeId);
+                .Where(t => t.TestId == deCodeId)
+                .AsQueryable();
+
+            var test = await testQuery.FirstOrDefaultAsync();
 
             if (test == null)
             {
                 return NotFound("Bài kiểm tra không tồn tại hoặc bạn chưa làm bài này.");
             }
 
-            var userTestResults = await _context.TestResults
+            // Truy vấn TestResults bằng IQueryable
+            var userTestResultsQuery = _context.TestResults
                 .Where(tr => tr.TestId == deCodeId && tr.UserId == userId)
                 .Include(tr => tr.User)
-                .ToListAsync();
+                .AsQueryable();
 
+            var userTestResults = await userTestResultsQuery.ToListAsync();
+
+            // Tính toán thời gian làm bài
             var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.SubmittedAt).FirstOrDefault();
             var latestSubmittedResult = userTestResults.OrderByDescending(tr => tr.SubmittedAt).FirstOrDefault();
 
@@ -164,6 +172,7 @@ namespace Web_TracNghiem_HTSV.Controllers
                 timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.SubmittedAt;
             }
 
+            // Thiết lập ViewBag cho view
             ViewBag.TimeTaken = timeTaken;
             ViewBag.LatestSubmittedAt = latestSubmittedResult?.SubmittedAt;
             ViewBag.UserTestResulted = userTestResults;
@@ -175,6 +184,7 @@ namespace Web_TracNghiem_HTSV.Controllers
 
             return View(test);
         }
+
 
 
         // TestsController.cs

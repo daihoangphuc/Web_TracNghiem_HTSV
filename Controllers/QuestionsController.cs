@@ -12,7 +12,7 @@ using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
     public class QuestionsController : Controller
     {
         private readonly ApplicationDbContext _context;

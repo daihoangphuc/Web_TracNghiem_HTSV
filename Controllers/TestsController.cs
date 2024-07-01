@@ -162,14 +162,15 @@ namespace Web_TracNghiem_HTSV.Controllers
             var userTestResults = await userTestResultsQuery.ToListAsync();
 
             // Tính toán thời gian làm bài
-            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.SubmittedAt).FirstOrDefault();
+            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.StartedAt).FirstOrDefault();
+
             var latestSubmittedResult = userTestResults.OrderByDescending(tr => tr.SubmittedAt).FirstOrDefault();
 
             TimeSpan? timeTaken = null;
 
             if (earliestSubmittedResult != null && latestSubmittedResult != null)
             {
-                timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.SubmittedAt;
+                timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.StartedAt;
             }
 
             // Thiết lập ViewBag cho view
@@ -181,7 +182,6 @@ namespace Web_TracNghiem_HTSV.Controllers
             ViewBag.TotalScore = userTestResults.Where(u => u.UserId == userId).Sum(tr => tr.TotalScore);
             ViewBag.ListQuestion = test.Questions.ToList();
             ViewBag.ListTestResult = userTestResults;
-
             return View(test);
         }
 
@@ -198,28 +198,43 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> TestDetails(string id, int page = 1)
+        [HttpGet]
+        public IActionResult TestDetails(string id, int page = 1)
         {
-            var test = await _context.Tests
+            // Lưu thời gian bắt đầu vào Session nếu chưa có
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("TestStartTime")))
+            {
+                HttpContext.Session.SetString("TestStartTime", DateTime.UtcNow.ToString());
+            }
+
+            // Lấy thông tin bài test từ database
+            var test = _context.Tests
                 .Include(t => t.Questions)
-                    .ThenInclude(q => q.Answers) // Include câu trả lời cho từng câu hỏi
-                .FirstOrDefaultAsync(t => t.TestId == id);
-            int PageSize = 1;
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefault(t => t.TestId == id);
+
             if (test == null)
             {
                 return NotFound();
             }
 
+            // Phân trang các câu hỏi
+            int PageSize = 1;
             var questions = test.Questions
-            .OrderBy(q => q.QuestionId) // Sắp xếp theo Id hoặc thứ tự phù hợp
-                .Skip((page - 1) * PageSize) // Bỏ qua số lượng phần tử đã phân trang
-                .Take(PageSize) // Lấy số lượng câu hỏi cho từng trang
-            .ToList();
+                .OrderBy(q => q.QuestionId)
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
 
             var paginatedList = new PaginatedList<Question>(questions, test.Questions.Count, page, PageSize);
+
+            // Truyền các biến cần thiết vào ViewBag để sử dụng trong view
+            ViewBag.TestId = id;
             ViewBag.NextPage = page + 1;
+
             return View(paginatedList);
         }
+
 
         [Authorize]
         [HttpPost]
@@ -227,8 +242,17 @@ namespace Web_TracNghiem_HTSV.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                // Lấy UserId từ Claims (ví dụ: ASP.NET Core Identity)
+                // Lấy UserId từ Claims
                 string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                // Lấy thời gian bắt đầu từ Session
+                string testStartTimeStr = HttpContext.Session.GetString("TestStartTime");
+                DateTime startedAt;
+                if (!DateTime.TryParse(testStartTimeStr, out startedAt))
+                {
+                    // Xử lý nếu thời gian bắt đầu không tồn tại hoặc không hợp lệ
+                    return BadRequest("Invalid start time");
+                }
 
                 // Lấy thông tin bài test từ database
                 var test = await _context.Tests.FindAsync(testId);
@@ -240,11 +264,9 @@ namespace Web_TracNghiem_HTSV.Controllers
 
                 // Lấy đáp án đúng cho câu hỏi hiện tại
                 var correctAnswer = await _context.Questions
-                                                 .Where(q => q.QuestionId == questionId)
-                                                 .Select(q => q.CorrectAnswer)
-                                                 .FirstOrDefaultAsync();
-
-
+                                                  .Where(q => q.QuestionId == questionId)
+                                                  .Select(q => q.CorrectAnswer)
+                                                  .FirstOrDefaultAsync();
 
                 if (correctAnswer == null)
                 {
@@ -253,6 +275,7 @@ namespace Web_TracNghiem_HTSV.Controllers
 
                 // Kiểm tra đáp án đã chọn có đúng không
                 bool isCorrect = correctAnswer == selectedAnswer;
+
                 // Lấy múi giờ Việt Nam
                 TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
@@ -265,8 +288,8 @@ namespace Web_TracNghiem_HTSV.Controllers
                     TestResultId = Guid.NewGuid().ToString(),
                     UserId = userId,
                     TestId = testId,
+                    StartedAt = TimeZoneInfo.ConvertTimeFromUtc(startedAt, vietnamTimeZone),
                     SubmittedAt = TimeZoneInfo.ConvertTimeFromUtc(utcNow, vietnamTimeZone),
-
                     IsCorrect = isCorrect,
                     QuestionId = questionId,
                     SelectedAnswer = selectedAnswer,
@@ -276,6 +299,9 @@ namespace Web_TracNghiem_HTSV.Controllers
                 // Lưu TestResult vào database
                 _context.Add(testResult);
                 await _context.SaveChangesAsync();
+
+                // Xóa thời gian bắt đầu khỏi session sau khi hoàn thành bài kiểm tra
+                HttpContext.Session.Remove("TestStartTime");
 
                 return RedirectToAction(nameof(Index)); // Hoặc trả về một view khác tùy vào yêu cầu của bạn
             }

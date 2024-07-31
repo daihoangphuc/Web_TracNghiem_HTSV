@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Web_TracNghiem_HTSV.Data;
 using Web_TracNghiem_HTSV.Models;
 using Web_TracNghiem_HTSV.Services;
@@ -22,6 +17,63 @@ namespace Web_TracNghiem_HTSV.Controllers
         {
             _context = context;
         }
+
+        [Authorize(Roles = "Administrators")]
+        public async Task<IActionResult> MoreDetailOfTest(string id)
+        {
+            // Giải mã `TestId` từ Base64
+            var deCodeId = EncodeUrl.Decode(id);
+
+            if (string.IsNullOrEmpty(deCodeId))
+            {
+                return NotFound();
+            }
+
+            // Lấy dữ liệu từ cơ sở dữ liệu
+            var resultDetails = await _context.TestResults
+                .Where(tr => tr.TestId == deCodeId)
+                .Join(
+                    _context.Users,
+                    tr => tr.UserId,
+                    u => u.Id,
+                    (tr, u) => new { tr, u }
+                )
+                .GroupBy(t => new { t.tr.UserId, t.u.UserName, t.tr.TestId })
+                .Select(g => new
+                {
+                    UserId = g.Key.UserId,
+                    UserName = g.Key.UserName,
+                    TestId = g.Key.TestId,
+                    TotalScore = g.Sum(t => t.tr.TotalScore),
+                    TimeTaken = g.Sum(t => EF.Functions.DateDiffSecond(t.tr.StartedAt, t.tr.SubmittedAt)),
+                    LatestSubmittedAt = g.Max(t => t.tr.SubmittedAt)
+                })
+                .ToListAsync();
+
+            // Chuyển đổi dữ liệu và sắp xếp trong bộ nhớ
+            var resultDetailsViewModel = resultDetails
+                .Select(r => new UserTestResultDetailViewModel
+                {
+                    UserId = r.UserId,
+                    UserName = r.UserName,
+                    TestId = r.TestId,
+                    TotalScore = r.TotalScore,
+                    TimeTaken = TimeSpan.FromSeconds(r.TimeTaken),
+                    LatestSubmittedAt = r.LatestSubmittedAt
+                })
+                .OrderByDescending(r => r.TotalScore) // Sắp xếp theo điểm số từ cao đến thấp
+                .ThenBy(r => r.TimeTaken) // Nếu điểm số bằng nhau, sắp xếp theo thời gian làm bài từ thấp đến cao
+                .ToList();
+
+            if (resultDetailsViewModel == null || !resultDetailsViewModel.Any())
+            {
+                return NotFound("Không tìm thấy kết quả làm bài cho bài kiểm tra này.");
+            }
+
+            return View(resultDetailsViewModel);
+        }
+
+
 
         [Authorize(Roles = "Administrators")]
         [HttpPost]
@@ -125,7 +177,6 @@ namespace Web_TracNghiem_HTSV.Controllers
             return View(testViewModels);
         }
 
-
         [Authorize]
         public async Task<IActionResult> ResultOfTest(string id)
         {
@@ -162,28 +213,24 @@ namespace Web_TracNghiem_HTSV.Controllers
             var userTestResults = await userTestResultsQuery.ToListAsync();
 
             // Tính toán thời gian làm bài
-            var earliestSubmittedResult = userTestResults.OrderBy(tr => tr.StartedAt).FirstOrDefault();
+            var earliestSubmittedResult = await userTestResultsQuery.MinAsync(tr => tr.StartedAt);
+            var latestSubmittedResult = await userTestResultsQuery.MaxAsync(tr => tr.SubmittedAt);
 
-            var latestSubmittedResult = userTestResults.OrderByDescending(tr => tr.SubmittedAt).FirstOrDefault();
-
-            TimeSpan? timeTaken = null;
-
-            if (earliestSubmittedResult != null && latestSubmittedResult != null)
-            {
-                timeTaken = latestSubmittedResult.SubmittedAt - earliestSubmittedResult.StartedAt;
-            }
+            TimeSpan? timeTaken = latestSubmittedResult - earliestSubmittedResult;
 
             // Thiết lập ViewBag cho view
             ViewBag.TimeTaken = timeTaken;
-            ViewBag.LatestSubmittedAt = latestSubmittedResult?.SubmittedAt;
+            ViewBag.LatestSubmittedAt = latestSubmittedResult;
             ViewBag.UserTestResulted = userTestResults;
             ViewBag.UserId = userId;
             ViewBag.TestName = test.TestName;
-            ViewBag.TotalScore = userTestResults.Where(u => u.UserId == userId).Sum(tr => tr.TotalScore);
+            ViewBag.TotalScore = userTestResults.Sum(tr => tr.TotalScore);
             ViewBag.ListQuestion = test.Questions.ToList();
             ViewBag.ListTestResult = userTestResults;
+
             return View(test);
         }
+
 
 
 
@@ -217,7 +264,10 @@ namespace Web_TracNghiem_HTSV.Controllers
             {
                 return NotFound();
             }
-
+            if (test.IsLocked)
+            {
+                return NotFound("Bài kiểm tra đã bị khóa"); // Ngăn chặn truy cập nếu bài kiểm tra bị khóa
+            }
             // Phân trang các câu hỏi
             int PageSize = 1;
             var questions = test.Questions

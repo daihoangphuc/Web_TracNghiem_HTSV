@@ -31,22 +31,21 @@
             <tr class="bg-gray-100">
                 <th class="px-4 py-2">Tên bài kiểm tra</th>
                 @if (User.IsInRole("Administrators"))
-                 {
-                    <th class="px-4 py-2">
-
-                        Số lượt làm bài
-                    </th>
+                {
+                    <th class="px-4 py-2">Số lượt làm bài</th>
                 }
                 else
                 {
-                    <th class="px-4 py-2">
-                        Chức năng
-                    </th>
+                    <th class="px-4 py-2">Chức năng</th>
                 }
                 @if (User.IsInRole("Administrators"))
                 {
                     <th class="px-4 py-2">Chức năng</th>
                     <th class="px-4 py-2">Khóa/Mở</th>
+                }
+                @if (User.IsInRole("Administrators"))
+                {
+                    <th class="px-4 py-2">Rank</th>
                 }
             </tr>
         </thead>
@@ -74,7 +73,7 @@
                             {
                                 @if (hasQuestions)
                                 {
-                                    @if (ViewBag.countUserMakeTest != null)
+                                    if (ViewBag.countUserMakeTest != null)
                                     {
                                         var userCounts = ViewBag.countUserMakeTest as IEnumerable<dynamic>;
                                         var userCount = userCounts.FirstOrDefault(tr => tr.TestId == testId)?.UserCount ?? 0;
@@ -93,7 +92,6 @@
 
                                 // Sử dụng `base64TestId` trong URL
                                 <a href="/Tests/ResultOfTest/?id=@base64TestId" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kết quả</a>
-                                @* <a asp-action="ResultOfTest" asp-route-id="@item.TestId" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kết quả</a> *@
                             }
                             else
                             {
@@ -103,7 +101,7 @@
                         @if (isAdmin)
                         {
                             <td class="px-4 py-2">
-                                <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@item.TestId" class="btn btn-info bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.TestId" class="btn btn-danger bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a>
                             </td>
                             <td class="px-4 py-2">
@@ -112,6 +110,14 @@
                                         @(item.IsLocked ? "Unlock" : "Lock")
                                     </button>
                                 </form>
+                            </td>
+                        }
+                        @if (isAdmin)
+                        {
+                            // Mã hóa `TestId` bằng Base64
+                            string base64TestId = EncodeUrl.Encode(item.TestId.ToString());
+                            <td class="px-4 py-2">
+                                <a asp-action="MoreDetailOfTest" asp-route-id="@base64TestId" class="btn btn-info bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Xếp hạng </a>
                             </td>
                         }
                     </tr>
@@ -123,18 +129,18 @@
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
 
-<nav aria-label="Page navigation" class="pt-3">
-    <ul class="pagination">
-        <li class="page-item @prevDisabled">
-            <a class="page-link" href="?pageNumber=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]">Trang trước</a>
-        </li>
-        <li class="page-item @nextDisabled">
-            <a class="page-link" href="?pageNumber=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]">Trang sau</a>
-        </li>
-    </ul>
-</nav>
+}
+    <nav aria-label="Page navigation" class="pt-3">
+        <ul class="pagination">
+            <li class="page-item @prevDisabled">
+                <a class="page-link" href="?pageNumber=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]">Trang trước</a>
+            </li>
+            <li class="page-item @nextDisabled">
+                <a class="page-link" href="?pageNumber=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]">Trang sau</a>
+            </li>
+        </ul>
+    </nav>
 
 
 <style>

@@ -286,3 +286,16 @@ D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracN
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracNghiem_HTSV.genruntimeconfig.cache
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\ref\Web_TracNghiem_HTSV.dll
 D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\obj\Debug\net8.0\Web_TracNghiem_HTSV.sourcelink.json
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\AWSSDK.Core.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\AWSSDK.SecurityToken.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\DnsClient.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\MongoDB.Driver.Core.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\MongoDB.Libmongocrypt.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\SharpCompress.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\Snappier.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\ZstdSharp.dll
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
+D:\@D_NET_MVC\Web_TracNghiem_HTSV\Web_TracNghiem_HTSV\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll

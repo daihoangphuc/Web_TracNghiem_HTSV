@@ -298,6 +298,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcTGlzdFRlc3RzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/MoreDetailOfTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcTW9yZURldGFpbE9mVGVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/@D_NET_MVC/Web_TracNghiem_HTSV/Web_TracNghiem_HTSV/Views/Tests/ResultOfTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcUmVzdWx0T2ZUZXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

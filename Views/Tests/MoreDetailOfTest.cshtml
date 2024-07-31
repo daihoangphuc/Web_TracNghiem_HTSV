@@ -1,0 +1,92 @@
+﻿@model IEnumerable<UserTestResultDetailViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .rank-badge {
+            color: #b45309; /* Màu chữ vàng đậm */
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 2rem;
+            line-height: 1.25rem;
+        }
+
+            .rank-badge.gold {
+                background-color: #ffd700; /* Màu nền vàng đậm */
+                color: #fff; /* Màu chữ trắng */
+            }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Kết quả</h1>
+        @if (Model.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-300 bg-white shadow-lg rounded-lg border border-gray-300">
+                    <thead class="bg-blue-500 text-white rounded-t-lg">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Hạng</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Người làm bài</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tổng điểm</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Thời gian làm bài</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nộp bài lúc</th>
+                        </tr>
+                    </thead>
+                    @{
+                        var rank = 1;
+                    }
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach (var result in Model)
+                        {
+                            <tr class="hover:bg-gray-100 transition duration-300 ease-in-out">
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @if (rank == 1)
+                                    {
+                                        <span class="rank-badge">🥇</span>
+                                    }
+                                    @if (rank > 1)
+                                    {
+                                        <span class="pl-6">@rank</span>
+
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @result.UserName.Substring(0, result.UserName.IndexOf("@"))
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @result.TotalScore điểm
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @(result.TimeTaken.HasValue ? $"{result.TimeTaken.Value.TotalSeconds} giây" : "N/A")
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @(result.LatestSubmittedAt.HasValue ? result.LatestSubmittedAt.Value.ToString("HH:mm:ss (dd/MM/yyyy)") : "N/A")
+                                </td>
+                            </tr>
+                            rank++;
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-700">
+                                Xếp hạng bài kiểm tra
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-center text-red-600">Không có kết quả để hiển thị.</p>
+        }
+    </div>
+</body>
+</html>

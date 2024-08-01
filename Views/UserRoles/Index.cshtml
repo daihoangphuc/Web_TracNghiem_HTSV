@@ -59,17 +59,19 @@
         var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
         var nextDisabled = !Model.HasNextPage ? "disabled" : "";
     }
-
-    <nav aria-label="Page navigation" class="pt-3">
-        <ul class="pagination">
-            <li class="page-item @prevDisabled">
-                <a class="page-link" href="?pageNumber=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]">Trang trước</a>
-            </li>
-            <li class="page-item @nextDisabled">
-                <a class="page-link" href="?pageNumber=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]">Trang sau</a>
-            </li>
-        </ul>
-    </nav>
+    @if (Model.HasNextPage || Model.HasPreviousPage)
+    {
+        <nav aria-label="Page navigation" class="pt-3">
+            <ul class="pagination">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" href="?pageNumber=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]">Trang trước</a>
+                </li>
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" href="?pageNumber=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]">Trang sau</a>
+                </li>
+            </ul>
+        </nav>
+    }
 
 </div>
 

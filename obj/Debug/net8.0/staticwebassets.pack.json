@@ -3209,6 +3209,10 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\email_template\\change_email_confirm.html",
+      "PackagePath": "staticwebassets\\email_template\\change_email_confirm.html"
+    },
+    {
       "Id": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\email_template\\register_comfirm.html",
       "PackagePath": "staticwebassets\\email_template\\register_comfirm.html"
     },

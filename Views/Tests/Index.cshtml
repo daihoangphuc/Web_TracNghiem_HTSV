@@ -95,6 +95,8 @@
                             }
                             else
                             {
+                                // Mã hóa `TestId` bằng Base64
+                                string base64TestId = EncodeUrl.Encode(item.TestId.ToString());
                                 <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
                             }
                         </td>
@@ -131,6 +133,8 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 
 }
+@if(Model.HasNextPage || Model.HasPreviousPage)
+{
     <nav aria-label="Page navigation" class="pt-3">
         <ul class="pagination">
             <li class="page-item @prevDisabled">
@@ -141,6 +145,7 @@
             </li>
         </ul>
     </nav>
+}
 
 
 <style>

@@ -260,13 +260,23 @@ namespace Web_TracNghiem_HTSV.Controllers
                 .ThenInclude(q => q.Answers)
                 .FirstOrDefault(t => t.TestId == id);
 
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userMakeTestResult = _context.TestResults.Where(tr => tr.TestId == id && tr.UserId == userId).ToList();
+            var questionOfTest = _context.Questions.Where(q => q.TestId == id).ToList();
+            if (questionOfTest.Count == userMakeTestResult.Count())
+            {
+
+                return NotFound("Bạn đã làm bài này rồi");
+           /*     return RedirectToAction("ResultOfTest", new { id = id });*/
+            }
             if (test == null)
             {
                 return NotFound();
             }
             if (test.IsLocked)
             {
-                return NotFound("Bài kiểm tra đã bị khóa"); // Ngăn chặn truy cập nếu bài kiểm tra bị khóa
+                return NotFound("Bài kiểm tra đã bị khóa"); 
             }
             // Phân trang các câu hỏi
             int PageSize = 1;

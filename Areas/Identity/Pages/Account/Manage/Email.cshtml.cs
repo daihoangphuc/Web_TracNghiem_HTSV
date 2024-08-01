@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +22,17 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public EmailModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -124,12 +127,25 @@ namespace Web_TracNghiem_HTSV.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+
+
+                // Đường dẫn đến file HTML template
+                string templatePath = Path.Combine(_webHostEnvironment.WebRootPath, "email_template", "change_email_confirm.html");
+
+                // Đọc nội dung của file template
+                string htmlTemplate = System.IO.File.ReadAllText(templatePath);
+
+                var link = HtmlEncoder.Default.Encode(callbackUrl);
+
+                string htmlMessage = htmlTemplate.Replace("{{link}}", link);
+                /*
+                                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");*/
+
+                await _emailSender.SendEmailAsync(Input.NewEmail, "Xác thực thay đổi email", htmlMessage);
+
+                StatusMessage = "Liên kết xác nhận để thay đổi email đã gửi. Vui lòng kiểm tra email của bạn.";
                 return RedirectToPage();
             }
 

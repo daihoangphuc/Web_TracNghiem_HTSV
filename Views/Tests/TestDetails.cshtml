@@ -15,7 +15,7 @@
     <!-- Import Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100" style="margin-top -20px;">
+<body class="bg-gray-100" style="margin-top: 20px;">
     <div class="container mx-auto p-4 sm:p-8">
         <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Kiểm tra</h1>
 
@@ -23,16 +23,18 @@
         {
             <div id="question-container-@question.QuestionId" class="bg-white shadow-md rounded-lg p-6 mb-8 quiz-card">
                 <p class="mb-4 text-lg"><strong>Câu hỏi @Model.PageIndex</strong>: @question.QuestionContent</p>
-                <div id="timer-@question.QuestionId" class="text-red-600 font-bold text-lg">15</div> <!-- Timer Div -->
+                <div id="timer-@question.QuestionId" class="text-red-600 font-bold text-lg">30</div> <!-- Timer Div -->
                 <div class="grid grid-cols-1 gap-4">
                     @using (Html.BeginForm("MakeTestResult", "Tests", FormMethod.Post, new { id = "quizForm" }))
                     {
                         @Html.Hidden("TestId", question.TestId)
                         @Html.Hidden("QuestionId", question.QuestionId)
+                        @Html.Hidden("CorrectAnswer", question.CorrectAnswer.FirstOrDefault())
                         var sortedAnswers = question.Answers.OrderBy(a => a.AnswerDescription[0]).ToList();
-
+                        var correctAnswer = question.CorrectAnswer.FirstOrDefault();
                         foreach (var answer in sortedAnswers)
                         {
+                            @Html.Hidden($"Answers[{answer.AnswerId}]", answer.AnswerDescription)
                             <label id="option-@question.QuestionId-@answer.AnswerId" class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
                                 <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
                                 @answer.AnswerDescription
@@ -41,14 +43,13 @@
                     }
                 </div>
             </div>
-
         }
 
         <div class="text-center mt-8">
             @if (Model.HasNextPage)
             {
                 <button id="confirm-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="submitAndNextPage(@(Model.PageIndex + 1), false)">
-                    Câu tiếp theo 
+                    Câu tiếp theo
                 </button>
             }
             else
@@ -63,15 +64,15 @@
         </div>
     </div>
     <style>
-        #confirm-button{
-           margin-top: -20px;
+        #confirm-button {
+            margin-top: -20px;
         }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var timerElement = document.getElementById("timer-@Model.Items[0]?.QuestionId");
             if (timerElement) {
-                startTimer(timerElement, 15); // Bắt đầu đếm ngược 15 giây cho câu hỏi đầu tiên
+                startTimer(timerElement, 30); // Bắt đầu đếm ngược 30 giây
             }
         });
 
@@ -83,11 +84,47 @@
 
                 if (--timer < 0) {
                     clearInterval(intervalId); // Dừng bộ đếm
-                    alert('Hết thời gian! Chuyển đến câu hỏi tiếp theo.');
-                    // Gọi hàm chuyển sang câu hỏi tiếp theo hoặc tự động submit
-                    submitAndNextPage(@(Model.PageIndex + 1), !Model.HasNextPage);
+                    alert('Hết thời gian! Đang tự động chuyển đến câu hỏi tiếp theo.');
+
+                    // Chọn đáp án sai và tự động chuyển đến câu hỏi tiếp theo
+                    autoSelectIncorrectAnswer();
                 }
             }, 1000); // Đếm ngược mỗi giây
+        }
+
+        function autoSelectIncorrectAnswer() {
+            var form = document.getElementById('quizForm');
+            var formData = new FormData(form);
+
+            var correctAnswer = formData.get('CorrectAnswer');
+            var answers = [];
+
+            formData.forEach(function (value, key) {
+                if (key.startsWith('Answers[')) {
+                    answers.push(value);
+                }
+            });
+
+            var incorrectAnswers = answers.filter(answer => answer !== correctAnswer);
+
+            if (incorrectAnswers.length > 0) {
+                var randomAnswer = incorrectAnswers[Math.floor(Math.random() * incorrectAnswers.length)];
+                formData.set('selectedAnswer', randomAnswer);
+            }
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = `@Url.Action("TestDetails", new { id = Model.Items[0]?.TestId, page = @Model.PageIndex + 1 })`;
+                } else {
+                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            });
         }
 
         function submitAndNextPage(nextPage, isLastPage) {
@@ -96,6 +133,7 @@
 
             var form = document.getElementById('quizForm');
             var formData = new FormData(form);
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData
@@ -121,32 +159,7 @@
         function submitFinal() {
             window.location.href = '@Url.Action("Index", "Tests")';
         }
-
-        function checkAnswer(TestId, selectedDescription, correctAnswer) {
-            var selectedOption = selectedDescription.charAt(0);
-            var selectedLabel = document.getElementById(`option-${TestId}-${selectedDescription}`);
-            var correctLabel = document.getElementById(`option-${TestId}-${correctAnswer}`);
-
-            var radios = document.querySelectorAll(`input[name="selectedAnswer"]`);
-            radios.forEach(radio => {
-                radio.disabled = true;
-                if (radio.value === correctAnswer) {
-                    radio.parentNode.classList.remove("bg-gray-200", "hover:bg-gray-300");
-                    radio.parentNode.classList.add("bg-green-200");
-                }
-            });
-
-            selectedLabel.classList.remove("bg-gray-200", "hover:bg-gray-300");
-            if (selectedOption === correctAnswer) {
-                selectedLabel.classList.add("bg-green-200");
-            } else {
-                selectedLabel.classList.add("bg-red-200");
-                correctLabel.classList.remove("bg-gray-200", "hover:bg-gray-300");
-                correctLabel.classList.add("bg-green-200");
-            }
-        }
     </script>
-
 
 </body>
 </html>

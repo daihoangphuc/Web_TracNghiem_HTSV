@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "gKCPlIILdqBsePE1oRXphYjRsD4RuAF8sSHP0b2u/cI=",
+  "Hash": "nw9hYIHOlTly18eE2ZVdHeLnGJkJ4lKZnv98g6pUshM=",
   "Source": "Web_TracNghiem_HTSV",
   "BasePath": "_content/Web_TracNghiem_HTSV",
   "Mode": "Default",
@@ -3872,6 +3872,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\email_template\\change_email_confirm.html",
+      "SourceId": "Web_TracNghiem_HTSV",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\",
+      "BasePath": "_content/Web_TracNghiem_HTSV",
+      "RelativePath": "email_template/change_email_confirm.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\email_template\\change_email_confirm.html"
     },
     {
       "Identity": "D:\\@D_NET_MVC\\Web_TracNghiem_HTSV\\Web_TracNghiem_HTSV\\wwwroot\\email_template\\register_comfirm.html",

@@ -16,7 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100" style="margin-top: 20px;">
-    <div class="container mx-auto p-4 sm:p-8">
+    <div class="container mx-auto p-1 sm:p-8">
         <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Kiểm tra</h1>
 
         @foreach (var question in Model.Items)
@@ -35,7 +35,7 @@
                         foreach (var answer in sortedAnswers)
                         {
                             @Html.Hidden($"Answers[{answer.AnswerId}]", answer.AnswerDescription)
-                            <label id="option-@question.QuestionId-@answer.AnswerId" class="block bg-gray-200 p-3 m-3 rounded-lg hover:bg-gray-300 transition duration-200">
+                            <label id="option-@question.QuestionId-@answer.AnswerId" class="block bg-gray-200 p-3 m-2 rounded-lg hover:bg-gray-300 transition duration-200">
                                 <input type="radio" name="selectedAnswer" value="@answer.AnswerDescription" class="mr-2">
                                 @answer.AnswerDescription
                             </label>
@@ -45,14 +45,20 @@
             </div>
         }
 
-        <div class="text-center mt-8">
+        <div class="text-center mt-8 d-flex justify-content-evenly">
+            @if (Model.HasPreviousPage)
+            {
+                <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="previousPage()">
+                    Câu trước
+                </button>
+            }
             @if (Model.HasNextPage)
             {
                 <button id="confirm-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="submitAndNextPage(@(Model.PageIndex + 1), false)">
                     Câu tiếp theo
                 </button>
             }
-            else
+            @if (!Model.HasNextPage)
             {
                 <button id="confirm-button" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 mx-auto block" onclick="submitAndNextPage(@(Model.PageIndex + 1), true)">
                     Câu tiếp theo
@@ -61,13 +67,11 @@
                     Nộp bài
                 </button>
             }
+            
+
         </div>
     </div>
-    <style>
-        #confirm-button {
-            margin-top: -20px;
-        }
-    </style>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var timerElement = document.getElementById("timer-@Model.Items[0]?.QuestionId");
@@ -75,7 +79,9 @@
                 startTimer(timerElement, 30); // Bắt đầu đếm ngược 30 giây
             }
         });
-
+        function previousPage(){
+            window.location.href = `@Url.Action("TestDetails", new { id = EncodeUrl.Encode(Model.Items[0]?.TestId), page = Model.PageIndex - 1 })`;
+        }
         function startTimer(element, duration) {
             var timer = duration, seconds;
             var intervalId = setInterval(function () {
@@ -117,7 +123,7 @@
                 body: formData
             }).then(response => {
                 if (response.ok) {
-                    window.location.href = `@Url.Action("TestDetails", new { id = Model.Items[0]?.TestId, page = @Model.PageIndex + 1 })`;
+                    window.location.href = `@Url.Action("TestDetails", new { id = EncodeUrl.Encode(Model.Items[0]?.TestId), page = @Model.PageIndex + 1 })`;
                 } else {
                     alert('Có lỗi xảy ra. Vui lòng thử lại.');
                 }
@@ -143,7 +149,7 @@
                         confirmButton.style.display = 'none';
                         document.getElementById('submit-button').style.display = 'block';
                     } else {
-                        window.location.href = `@Url.Action("TestDetails", new { id = Model.Items[0]?.TestId, page = ViewBag.NextPage })`;
+                        window.location.href = `@Url.Action("TestDetails", new { id = EncodeUrl.Encode(Model.Items[0]?.TestId), page = ViewBag.NextPage })`;
                     }
                 } else {
                     alert('Có lỗi xảy ra. Vui lòng thử lại.');

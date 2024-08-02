@@ -97,7 +97,7 @@
                             {
                                 // Mã hóa `TestId` bằng Base64
                                 string base64TestId = EncodeUrl.Encode(item.TestId.ToString());
-                                <a asp-action="TestDetails" asp-route-id="@item.TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
+                                <a asp-action="TestDetails" asp-route-id="@base64TestId" class="btn btn-success bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Bắt đầu</a>
                             }
                         </td>
                         @if (isAdmin)

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver.Linq;
+using System.Linq;
 using System.Security.Claims;
 using Web_TracNghiem_HTSV.Data;
 using Web_TracNghiem_HTSV.Models;
@@ -248,6 +251,8 @@ namespace Web_TracNghiem_HTSV.Controllers
         [HttpGet]
         public IActionResult TestDetails(string id, int page = 1)
         {
+            // Giải mã `TestId` từ Base64
+            var deCodeId = EncodeUrl.Decode(id);
             // Lưu thời gian bắt đầu vào Session nếu chưa có
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("TestStartTime")))
             {
@@ -258,12 +263,13 @@ namespace Web_TracNghiem_HTSV.Controllers
             var test = _context.Tests
                 .Include(t => t.Questions)
                 .ThenInclude(q => q.Answers)
-                .FirstOrDefault(t => t.TestId == id);
+                .FirstOrDefault(t => t.TestId == deCodeId);
 
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var userMakeTestResult = _context.TestResults.Where(tr => tr.TestId == id && tr.UserId == userId).ToList();
-            var questionOfTest = _context.Questions.Where(q => q.TestId == id).ToList();
+            var userMakeTestResult = _context.TestResults.Where(tr => tr.TestId == deCodeId && tr.UserId == userId).ToList();
+            var questionOfTest = _context.Questions.Where(q => q.TestId == deCodeId).ToList();
+
             if (questionOfTest.Count == userMakeTestResult.Count())
             {
 
@@ -289,7 +295,7 @@ namespace Web_TracNghiem_HTSV.Controllers
             var paginatedList = new PaginatedList<Question>(questions, test.Questions.Count, page, PageSize);
 
             // Truyền các biến cần thiết vào ViewBag để sử dụng trong view
-            ViewBag.TestId = id;
+            ViewBag.TestId = deCodeId;
             ViewBag.NextPage = page + 1;
 
             return View(paginatedList);
@@ -332,7 +338,6 @@ namespace Web_TracNghiem_HTSV.Controllers
                 {
                     return NotFound("Question not found.");
                 }
-
                 // Kiểm tra đáp án đã chọn có đúng không
                 bool isCorrect = correctAnswer == selectedAnswer;
 
@@ -356,10 +361,20 @@ namespace Web_TracNghiem_HTSV.Controllers
                     TotalScore = isCorrect ? 10 : 0 // Giả sử điểm số mặc định là 10 nếu đúng
                 };
 
-                // Lưu TestResult vào database
-                _context.Add(testResult);
-                await _context.SaveChangesAsync();
+                var testResutExist = _context.TestResults.Where(tr => tr.UserId == userId && tr.TestId == testId && tr.QuestionId == questionId).FirstOrDefault();
 
+
+                if (testResutExist != null)
+                {
+                    testResutExist.SelectedAnswer = selectedAnswer;
+                    _context.TestResults.Update(testResutExist);
+                }
+                else
+                {
+                    // Lưu TestResult vào database
+                    _context.TestResults.Add(testResult);
+                }
+                await _context.SaveChangesAsync();
                 // Xóa thời gian bắt đầu khỏi session sau khi hoàn thành bài kiểm tra
                 HttpContext.Session.Remove("TestStartTime");
 

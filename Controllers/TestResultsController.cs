@@ -186,5 +186,17 @@ namespace Web_TracNghiem_HTSV.Controllers
         {
             return _context.TestResults.Any(e => e.TestResultId == id);
         }
+
+
+        // POST: TestResults/DeleteAll
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAll()
+        {
+            _context.TestResults.RemoveRange(_context.TestResults);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

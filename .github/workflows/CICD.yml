@@ -28,7 +28,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} --build-arg SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }} --build-arg PFX_PASSWORD=${{ secrets.PFX_PASSWORD }} -t phuchoang1910/web_tracnghiem_htsv:latest .
+          docker build --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                       --build-arg SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }} \
+                       --build-arg PFX_PASSWORD=${{ secrets.PFX_PASSWORD }} \
+                       -t phuchoang1910/web_tracnghiem_htsv:latest .
       #Truyên các biến secret của github vào các tương ứng trong quá trình build docker images
       - name: Login to Docker Hub
         run: |
@@ -47,7 +50,7 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             # Pull and run web app Docker image 
-            docker pull phuchoang1910/web_tracnghiem_htsv:latest
-            docker stop web_tracnghiem_htsv || true && docker rm web_tracnghiem_htsv || true
-            docker run -d --name web_tracnghiem_htsv -p 80:80 -p 443:443 phuchoang1910/web_tracnghiem_htsv:latest
-            
+              docker pull phuchoang1910/web_tracnghiem_htsv:latest
+              docker stop web_tracnghiem_htsv || true && docker rm web_tracnghiem_htsv || true
+              docker run -d --name web_tracnghiem_htsv -p 80:80 -p 443:443 phuchoang1910/web_tracnghiem_htsv:latest
+              

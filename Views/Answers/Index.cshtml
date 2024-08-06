@@ -1,42 +1,119 @@
-﻿@model IEnumerable<Web_TracNghiem_HTSV.Models.Answer>
+﻿@model Web_TracNghiem_HTSV.Services.PaginatedList<Web_TracNghiem_HTSV.Models.Answer>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div>
+    <h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Answers</h1>
+    <!-- Search Form -->
+    <form asp-controller="Answers" asp-action="Index" method="get" class="mb-4">
+        <div class="search-container">
+            <input type="text" class="search-input w-full md:w-80 mb-2 md:mb-0" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Nhập câu trả lời" />
+            <button type="submit" class="search-button ml-2">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AnswerDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Question)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AnswerDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Question.QuestionId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AnswerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AnswerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AnswerId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <p class="text-center mb-4">
+        <a asp-action="Create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Create New</a>
+    </p>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-2 px-4 border-b">Answer Description</th>
+                    <th class="py-2 px-4 border-b">Question Content</th>
+                    <th class="py-2 px-4 border-b text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-2 px-4 border-b">@Html.DisplayFor(modelItem => item.AnswerDescription)</td>
+                        <td class="py-2 px-4 border-b">@Html.DisplayFor(modelItem => item.Question.QuestionContent)</td>
+                        <td class="py-2 px-4 border-b text-center">
+                            <a asp-action="Edit" asp-route-id="@item.AnswerId" class="text-yellow-500 hover:underline">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.AnswerId" class="text-blue-500 hover:underline">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.AnswerId" class="text-red-500 hover:underline">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+    @if (Model.HasNextPage || Model.HasPreviousPage)
+    {
+        <nav aria-label="Page navigation" class="pt-3">
+            <ul class="pagination">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchString="@ViewBag.CurrentFilter">Trang trước</a>
+                </li>
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchString="@ViewBag.CurrentFilter">Trang sau</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+<style>
+    /* Form */
+    .search-form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        position: relative;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 20px;
+        border: 1px solid #38b7fd;
+        border-radius: 25px;
+        font-size: 16px;
+        outline: none;
+        background-color: transparent;
+    }
+
+    .search-button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding-bottom: 10px;
+    }
+
+        .search-button i {
+            font-size: 20px;
+        }
+
+    @@media (min-width: 640px) {
+        .search-container {
+            width: 700px;
+        }
+
+        .search-input {
+            width: 700px;
+            min-width: 200px;
+        }
+    }
+</style>

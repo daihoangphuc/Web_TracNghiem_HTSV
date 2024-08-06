@@ -23,6 +23,7 @@
         <table class="min-w-full bg-white border rounded-md">
             <thead>
                 <tr>
+                    <th class="px-4 py-2 border-b">Id</th>
                     <th class="px-4 py-2 border-b">Tên</th>
                     <th class="px-4 py-2 border-b">Email</th>
                     <th class="px-4 py-2 border-b">Đổi quyền</th>
@@ -33,6 +34,7 @@
                 @foreach (var user in Model.Items)
                 {
                     <tr>
+                        <td class="px-4 py-2 border-b">@user.Id</td>
                         <td class="px-4 py-2 border-b">@user.UserName</td>
                         <td class="px-4 py-2 border-b">@user.Email</td>
                         <td class="px-4 py-2 border-b">

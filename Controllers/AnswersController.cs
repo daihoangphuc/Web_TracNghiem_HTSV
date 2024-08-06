@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Web_TracNghiem_HTSV.Data;
 using Web_TracNghiem_HTSV.Models;
+using Web_TracNghiem_HTSV.Services;
 
 namespace Web_TracNghiem_HTSV.Controllers
 {
@@ -23,10 +24,25 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         // GET: Answers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int pageIndex = 1, int pageSize = 5)
         {
-            var applicationDbContext = _context.Answers.Include(a => a.Question);
-            return View(await applicationDbContext.ToListAsync());
+            // Lấy tất cả các câu trả lời, bao gồm cả câu hỏi liên quan
+            var answers = from a in _context.Answers.Include(a => a.Question)
+                          select a;
+
+            // Thực hiện tìm kiếm nếu có searchString
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                answers = answers.Where(a => a.AnswerDescription.Contains(searchString));
+            }
+
+            // Phân trang
+            var paginatedList = await PaginatedList<Answer>.CreateAsync(answers.AsNoTracking(), pageIndex, pageSize);
+
+            // Truyền searchString vào ViewBag để giữ lại giá trị tìm kiếm khi phân trang
+            ViewBag.CurrentFilter = searchString;
+
+            return View(paginatedList);
         }
 
         // GET: Answers/Details/5

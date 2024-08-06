@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -186,17 +182,18 @@ namespace Web_TracNghiem_HTSV.Controllers
         {
             return _context.TestResults.Any(e => e.TestResultId == id);
         }
-
-
-        // POST: TestResults/DeleteAll
+        // Phương thức xóa tất cả TestResults theo UserId
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteAll()
+        public async Task<IActionResult> DeleteByUser(string userId)
         {
-            _context.TestResults.RemoveRange(_context.TestResults);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var userTestResults = _context.TestResults.Where(tr => tr.UserId == userId).ToList();
+            if (userTestResults.Any())
+            {
+                _context.TestResults.RemoveRange(userTestResults);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Tests");
         }
-
     }
 }

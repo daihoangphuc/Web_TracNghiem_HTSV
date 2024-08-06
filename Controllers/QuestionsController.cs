@@ -23,15 +23,25 @@ namespace Web_TracNghiem_HTSV.Controllers
         }
 
         // GET: Questions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int pageIndex = 1, int pageSize = 5)
         {
-            var applicationDbContext = _context.Questions.Include(q => q.Test);
-            return View(await applicationDbContext.ToListAsync());
-            /*            var questions = _context.Questions.Include(q => q.Answers).Skip((page - 1) * 1).Take(1).ToList();
+            // Lấy tất cả các câu hỏi, bao gồm cả bài kiểm tra liên quan
+            var questions = from q in _context.Questions.Include(q => q.Test)
+                            select q;
 
-                        var paginatedList = new PaginatedList<Question>(questions, _context.Questions.Count(), page, 1);
+            // Thực hiện tìm kiếm nếu có searchString
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                questions = questions.Where(q => q.QuestionContent.Contains(searchString));
+            }
 
-                        return View(paginatedList);*/
+            // Phân trang
+            var paginatedList = await PaginatedList<Question>.CreateAsync(questions.AsNoTracking(), pageIndex, pageSize);
+
+            // Truyền searchString vào ViewBag để giữ lại giá trị tìm kiếm khi phân trang
+            ViewBag.CurrentFilter = searchString;
+
+            return View(paginatedList);
         }
 
         // GET: Questions/Details/5
